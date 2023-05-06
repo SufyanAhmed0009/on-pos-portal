@@ -1,0 +1,11 @@
+<p>
+    <strong>
+        {{ data.message }}
+    </strong>
+</p>
+<div mat-dialog-actions [align]="'end'">
+    <button (click)="onCancel()" mat-raised-button [color]="'default'"> {{ data.cancel }}</button>
+    &nbsp;
+    <button  (click)="onConfirm()" mat-raised-button [color]="'primary'"> {{ data.confirm }}</button>
+</div>
+<br>

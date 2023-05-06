@@ -1,0 +1,15 @@
+<mat-form-field style="width: 70%;">
+    <input matInput autocomplete="off" [matDatepicker]="datePicker" [(ngModel)]="inputDate"
+        placeholder="Select Date">
+    <mat-datepicker-toggle matSuffix [for]="datePicker">
+    </mat-datepicker-toggle>
+    <mat-datepicker #datePicker></mat-datepicker>
+</mat-form-field>
+
+<button (click)="onSelect()" mat-icon-button>
+    <mat-icon>check</mat-icon>
+</button>
+
+<button (click)="onCancel()" mat-icon-button>
+    <mat-icon>close</mat-icon>
+</button>

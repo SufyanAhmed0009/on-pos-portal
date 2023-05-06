@@ -1,0 +1,53 @@
+cdk-virtual-scroll-viewport {
+    height: 300px;
+}
+
+.sales-stats {
+    display: flex;
+    flex-direction: column;
+    height: 400px;
+}
+
+.inventory-stats {
+    display: block;
+    padding: 10px;
+}
+
+table.sales-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table.sales-table.daily tr th {
+    font-weight: normal;
+    width: 20%;
+}
+
+table.sales-table.daily tr td {
+    text-align: center;
+    width: 20%;
+}
+
+
+table.sales-table.inventory tr th {
+    font-weight: normal;
+    width: 50%;
+}
+
+table.sales-table.inventory tr td {
+    text-align: center;
+    width: 50%;
+}
+
+table.sales-table thead tr {
+    height: 50px;
+    border: 1px solid #ddd;
+    background-color: #f6f6f6;
+}
+
+table.sales-table tbody tr {
+    height: 50px;
+    border: 1px solid #ddd;
+    background-color: white;
+}
+

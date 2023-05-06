@@ -1,0 +1,14 @@
+.mat-column-billDate {
+    flex: 0 0 30% !important;
+    width: 30% !important;
+  }
+
+.mat-column-billNumber {
+    flex: 0 0 30% !important;
+    width: 30% !important;
+  }
+
+.mat-row:hover {
+    background-color: #ccf;
+    cursor: pointer;
+}

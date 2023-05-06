@@ -1,0 +1,12 @@
+.login-form {
+    padding: 20px;
+}
+
+.error-box {
+    display: block;
+    text-align: center;
+    background-color: red;
+    color: white;
+    border-radius: 5px;
+    padding: 10px;
+}

@@ -1,0 +1,187 @@
+<mat-table [dataSource]="products" class="mat-elevation-z8">
+
+    <ng-container matColumnDef="select">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <mat-cell *matCellDef="let product; let i = index;">
+            <mat-checkbox [disabled]="true" [color]="'primary'" (change)="product.isSelected = !product.isSelected">
+            </mat-checkbox>
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="id">
+        <mat-header-cell *matHeaderCellDef> ON-SKU </mat-header-cell>
+        <mat-cell *matCellDef="let product;">
+            {{product.libItemId}} / {{ product.id }}
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="title">
+        <mat-header-cell *matHeaderCellDef>Title</mat-header-cell>
+        <mat-cell (click)="openImageModal(product.fileUrl)" *matCellDef="let product;">
+            {{ product.title }}
+        </mat-cell>
+    </ng-container>
+
+    <!-- Type Column -->
+    <!-- <ng-container matColumnDef="type">
+        <mat-header-cell *matHeaderCellDef>Type</mat-header-cell>
+        <mat-cell *matCellDef="let element;">
+            <mat-form-field *ngIf="element.isSelected" style="width: 95%">
+                <mat-label>Type</mat-label>
+                <mat-select [(ngModel)]="element.inventoryId">
+                    <mat-option *ngFor="let type of productTypes" [value]="type.id">
+                        {{ type.title }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <span *ngIf="!element.isSelected">{{ getType(element.inventoryId) }}</span>
+        </mat-cell>
+    </ng-container> -->
+
+    <ng-container matColumnDef="strategy">
+        <mat-header-cell *matHeaderCellDef>Pricing Strategy</mat-header-cell>
+        <mat-cell *matCellDef="let product;">
+            <span *ngIf="!product.isSelected">{{ getStrategyTitle(product.pricingStrategyId) }}</span>
+            <mat-form-field *ngIf="product.isSelected" style="width: 90%">
+                <mat-label>Strategy</mat-label>
+                <mat-select [(ngModel)]="product.pricingStrategyId">
+                    <mat-option *ngFor="let type of strategyTypes" [value]="type.id">
+                        {{ type.description }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="price">
+        <mat-header-cell *matHeaderCellDef>Price</mat-header-cell>
+        <mat-cell style="height: 60px;" *matCellDef="let product; let i = index;">
+            <span *ngIf="!product.isSelected">{{ product.price }}</span>
+            <mat-form-field *ngIf="product.isSelected" class="width-90">
+                <input [disabled]="product.pricingStrategyId < 3" autocomplete="off" matInput type="number" [(ngModel)]="product.price">
+            </mat-form-field>
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="cost">
+        <mat-header-cell *matHeaderCellDef>Cost</mat-header-cell>
+        <mat-cell *matCellDef="let product;">
+            {{ product.cost }}
+            <!-- <span *ngIf="!product.isSelected">{{ product.cost }}</span>
+            <mat-form-field *ngIf="product.isSelected" class="width-90">
+                <input autocomplete="off" matInput type="number" [(ngModel)]="product.cost">
+            </mat-form-field> -->
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="quantity">
+        <mat-header-cell *matHeaderCellDef>Quantity</mat-header-cell>
+        <mat-cell *matCellDef="let product;">
+            {{ product.quantity }}
+            <!-- &nbsp;&nbsp;
+            <button [disabled]="true" (click)="onReduceQuantity(product)" mat-icon-button>
+                <i class="fa fa-minus"></i>
+            </button> -->
+            <!-- <span *ngIf="!product.isSelected">{{ product.quantity }}</span>
+            <mat-form-field *ngIf="product.isSelected" class="width-90">
+                <input autocomplete="off" matInput type="number" [(ngModel)]="product.quantity">
+            </mat-form-field> -->
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="minQuantity">
+        <mat-header-cell *matHeaderCellDef>Th1</mat-header-cell>
+        <mat-cell *matCellDef="let product;">
+            <span *ngIf="!product.isSelected">{{ product.minQuantity }}</span>
+            <mat-form-field *ngIf="product.isSelected" class="width-90">
+                <input autocomplete="off" matInput type="number" [(ngModel)]="product.minQuantity">
+            </mat-form-field>
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="maxQuantity">
+        <mat-header-cell *matHeaderCellDef>Th2</mat-header-cell>
+        <mat-cell *matCellDef="let product;">
+            <span *ngIf="!product.isSelected">{{ product.maxQuantity }}</span>
+            <mat-form-field *ngIf="product.isSelected" class="width-90">
+                <input autocomplete="off" matInput type="number" [(ngModel)]="product.maxQuantity">
+            </mat-form-field>
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="discount">
+        <mat-header-cell *matHeaderCellDef>Discount</mat-header-cell>
+        <mat-cell *matCellDef="let product;">
+            <span *ngIf="!product.isSelected">{{ product.discountAmount }}</span>
+            <mat-form-field *ngIf="product.isSelected" class="width-90">
+                <input autocomplete="off" matInput type="number" [(ngModel)]="product.discountAmount">
+            </mat-form-field>
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="netSalePrice">
+        <mat-header-cell *matHeaderCellDef>Net Price</mat-header-cell>
+        <mat-cell *matCellDef="let product;">
+            {{ product.price - product.discountAmount }}
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="barcode">
+        <mat-header-cell *matHeaderCellDef>Barcode</mat-header-cell>
+        <mat-cell *matCellDef="let product;">
+            <span *ngIf="!product.isSelected">{{ product.barcode }}</span>
+            <mat-form-field *ngIf="product.isSelected" style="width: 90%;">
+                <input autocomplete="off" matInput type="number" [(ngModel)]="product.barcode">
+            </mat-form-field>
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="edit">
+        <mat-header-cell *matHeaderCellDef>Edit</mat-header-cell>
+        <mat-cell *matCellDef="let product;">
+            <button (click)="onUpdateProduct(product)" matTooltip="Update Product Price,Cost,Quantity" mat-mini-fab [color]="'default'">
+                <i class="fa fa-pencil"></i>
+            </button> 
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="editItemConversion">
+        <mat-header-cell *matHeaderCellDef>Convert</mat-header-cell>
+        <mat-cell *matCellDef="let product;">
+            <button (click)="onUpdateItemConversion(product)" matTooltip="Convert item to Carton/Loose" mat-mini-fab [color]="'default'">
+                <i class="fa fa-exchange"></i>
+            </button> 
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="verified">
+        <mat-header-cell *matHeaderCellDef>Verified</mat-header-cell>
+        <mat-cell *matCellDef="let product;">
+            <i class="green fa fa-check" *ngIf="product.verified"></i>
+            <i class="red fa fa-times" *ngIf="!product.verified"></i>
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="status">
+        <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+        <mat-cell *matCellDef="let element">
+
+            <span>{{ element.status.id == 3 ? 'Enabled' : 'Disabled' }}</span>
+            
+            <!-- <span *ngIf="!element.isSelected">{{ element.status.id == 3 ? 'Enabled' : 'Disabled' }}</span>
+            <mat-form-field *ngIf="element.isSelected" style="width: 95%">
+                <mat-label>Type</mat-label>
+                <mat-select [(ngModel)]="element.status.id">
+                    <mat-option *ngFor="let status of statusList" [value]="status.id">
+                        {{ status.title }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field> 
+             -->
+        </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="columnsList"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: columnsList;"></mat-row>
+
+</mat-table>

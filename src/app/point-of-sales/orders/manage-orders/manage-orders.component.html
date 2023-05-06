@@ -1,0 +1,84 @@
+<page-box>
+
+    <search-slice (search)="onSearch($event)" [searchTitle]="'Order No:'" (cancel)="onCancelSearch()"
+        (refresh)="onRefresh()" [title]="'Manage Orders'">
+    </search-slice> 
+
+    <mat-divider></mat-divider>
+
+    <div class="row" style="padding-top: 10px;">
+        <div class="col-md-3" style="padding-top: 15px;">
+            <i class="fa fa-search"></i> &nbsp;
+            Filters:
+        </div>
+        <div class="col-md-3">
+            <!-- <stores-selector (selected)="onStoreSelected($event)"></stores-selector> -->
+        </div>
+        <div class="col-md-3">
+            <small>Selected Store:</small><br>
+            <strong>{{ selectedStore.title }}</strong>
+        </div>
+        <div class="col-md-3">
+            <status-selector (selected)="onStatusSelected($event)" (cleared)="onStatusCleared()"></status-selector>
+        </div>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <div class="row">
+        <div class="col-md-4" style="padding: 10px; padding-top: 20px;">
+            <span *ngIf="loading" class="load-box" style="background-color: blue;">
+                Loading...
+            </span>
+            <span *ngIf="!loading" class="load-box" style="background-color: green;">
+                Success <i class="fa fa-check"></i>
+            </span>
+            &nbsp;&nbsp;
+            Last Updated:
+            {{ lastFetched | date:'mediumTime' }}
+        </div>
+        <div class="col-md-8">
+            <div class="row">
+                <div class="col-md-3">
+                    <br>
+                    <i class="fa fa-history"></i>
+                    Date Filter: &nbsp;
+                </div>
+                <div class="col-md-9">
+                    <date-range-selector (filter)="onFilterByDate($event)" (cancel)="cancelFilterByDate()">
+                    </date-range-selector>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <div style="padding: 10px 0;">
+        <div class="status-box" *ngFor="let status of statusCountList">
+            {{ status.title }}:
+            <strong>{{ status.count }}</strong>
+            | Rs. {{ status.amount | number:'.2' }}
+        </div>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <div style="padding: 10px 0;">
+        <div class="status-box" *ngFor="let status of statusCountListTwo">
+            {{ status.title }}:
+            <strong>{{ status.count }}</strong>
+            | Rs. {{ status.amount | number:'.2' }}
+        </div>
+    </div>
+
+    <mat-divider></mat-divider>
+    <br>
+
+    <orders-list (selected)="onSelectOrder($event)" *ngIf="orders" [orders]="orders"></orders-list>
+    <br>
+    <mat-paginator [pageIndex]="page.page" [length]="count" [pageSize]="page.size" [pageSizeOptions]="[5, 10, 25, 100]"
+        (page)="onPageChanged($event)">
+    </mat-paginator>
+
+</page-box>

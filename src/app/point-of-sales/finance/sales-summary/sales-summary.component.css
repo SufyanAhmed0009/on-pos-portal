@@ -1,0 +1,17 @@
+.title-bar {
+    display: flex;
+}
+
+.gray {
+    color: gray;
+}
+
+.data-list {
+    display: flex;
+}
+
+.data-item {
+    flex: 1;
+    padding: 20px;
+    text-align: center;
+}

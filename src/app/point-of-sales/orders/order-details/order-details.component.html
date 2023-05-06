@@ -1,0 +1,223 @@
+<h2 class="invoice-heading">
+    <div class="row">
+        <div class="col-6" style="padding-top: 8px;">Order</div>
+        <div [align]="'end'" class="col-6">
+            <button (click)="onClose()" mat-icon-button>
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+    </div>
+</h2>
+
+<data-loader *ngIf="loading"></data-loader>
+
+<div *ngIf="!loading" id="print-section">
+
+    <div style="padding-bottom: 10px;" [align]="'end'">
+        <button (click)="onMakeReady()" [disabled]="data.status != 'New'" mat-raised-button [color]="'default'">
+            Make Ready
+        </button>
+        &nbsp;
+        <button (click)="onDispatchOrder()" [disabled]="data.status != 'Ready'" mat-raised-button [color]="'default'">
+            Dispatch Order
+        </button>
+    </div>
+    <mat-progress-bar mode="indeterminate" *ngIf="submitting"></mat-progress-bar>
+
+    <!-- ORDER DETAILS -->
+    <div class="row">
+        <div class="col-md-4">
+            <div class="box">
+
+                <strong>Order Info: </strong>
+                <hr>
+
+                <small>Order Number:</small><br>
+                <strong>ORD-{{ order.orderDetails.id }} / {{this.storeId}}</strong>
+                <br>
+
+                <div class="status" [ngClass]="statusClass">
+                    <i class="fa fa-circle"></i>
+                    {{ data.status }}
+                </div>
+
+                <!-- <small>Status:</small><br> -->
+                <!-- <strong>{{ data.status }}</strong> -->
+                <!-- <br> -->
+
+                <small>Order Instructions:</small><br>
+                <i>{{ order.instructionComment }}</i>
+                <br>
+
+
+                <hr>
+                <span *ngFor="let log of data.statusLog">
+                    <small>{{ getStatusTitle(log.code) }}</small><br>
+                    {{ getTime(log.tsServerTime) | date:'short' }}
+                    <!-- {{ log.tsServerTime }}  -->
+                    <br>
+                </span>
+
+                <!-- <hr>
+                <div class="row" *ngFor="let feedback of order.feedbacks">
+                    <div class="col-6"><strong>{{ feedback.title }}</strong></div>
+                    <div class="col-6" [align]="'end'">
+                        <i class="fa fa-star" style="color: orange;"></i>
+                        {{ getFeedbackScore(feedback) }}
+                    </div>
+                </div> -->
+
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="box">
+                <strong>Customer: </strong>
+                <hr>
+
+                <small>Customer Name:</small><br>
+                <strong>{{ order.customerInfo.firstName }}</strong>
+                <br>
+
+                <!-- <small>Email:</small><br>
+                <small><i>{{ order.customerInfo.email }}</i></small>
+                <br>
+
+                <small>Phone:</small><br>
+                <strong>{{ order.customerInfo.phone }}</strong>
+                <br>
+
+                <small>Address:</small><br>
+                {{ order.customerInfo.address }} <br> -->
+
+                <small>Membership Type:</small><br>
+                <strong>
+                    {{ data.membershipType ? data.membershipType.title : 'NA' }}
+                </strong><br>
+
+                <small>App Version:</small><br>
+                <strong>
+                    {{ data.appVersion ? data.appVersion : 'NA' }}
+                </strong>
+                <br>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="box">
+                <strong>Calculations: </strong>
+                <hr>
+
+                <!--
+                <small>Actual Price:</small><br>
+                <strong>Rs. {{ order.orderDetails.actualAmount | number:'.2' }}</strong>
+                <br>
+
+                <small>Discounted Price:</small><br>
+                <strong>Rs. {{ order.orderDetails.discountedAmount | number:'.2' }}</strong>
+                <br>
+
+                <small>Delivery Charges:</small><br>
+                <strong>Rs. {{ order.deliveryCharges | number:'.2' }} </strong>
+                <br>
+
+                <small>Wallet Amount:</small><br>
+                <strong>Rs. {{ order.orderDetails.walletAmount | number:'.2' }}</strong>
+                <br>
+
+                <small>Wallet Amount Used:</small><br>
+                <strong>Rs. {{ order.orderDetails.walletAmountUsed | number:'.2' }}</strong>
+                <br> -->
+
+                <small>Total Price:</small><br>
+                <!-- <strong>Rs. {{ order.orderDetails.totalAmount | number:'.2' }}</strong> -->
+                <strong>Rs. {{ getBranchTotal() | number:'.2' }}</strong>
+                <br>
+
+                <!-- <small>Amount Received:</small><br>
+                <strong>
+                    {{
+                        order.amountRecieved
+                        ? 'Rs. ' + (order.amountRecieved | number:'.2')
+                        : 'NA'
+                    }}
+                </strong>
+                <br> -->
+            </div>
+        </div>
+    </div>
+
+    <br>
+    <!-- ITEMS TABLE -->
+    <mat-table [dataSource]="order.orderItemList" class="mat-elevation-z8">
+
+        <!-- ID Column -->
+        <ng-container matColumnDef="id">
+            <mat-header-cell *matHeaderCellDef>ON-SKU</mat-header-cell>
+            <mat-cell *matCellDef="let element; let i = index;">
+                {{ element.libraryId }} / {{ element.id }}
+            </mat-cell>
+        </ng-container>
+
+        <!-- Title Column -->
+        <ng-container matColumnDef="title">
+            <mat-header-cell *matHeaderCellDef>Title</mat-header-cell>
+            <mat-cell *matCellDef="let element; let i = index;">
+                {{ element.itemName }}
+            </mat-cell>
+        </ng-container>
+
+        <!-- Actual Price Column -->
+        <ng-container matColumnDef="actualPrice">
+            <mat-header-cell *matHeaderCellDef> Actual Price </mat-header-cell>
+            <mat-cell *matCellDef="let element; let i = index;">
+                {{ element.price | number:'.2'}}
+            </mat-cell>
+        </ng-container>
+
+        <!-- Price Column -->
+        <ng-container matColumnDef="price">
+            <mat-header-cell *matHeaderCellDef>Price</mat-header-cell>
+            <mat-cell *matCellDef="let element; let i = index;">
+                {{ element.price - element.discount | number:'.2'}}
+            </mat-cell>
+        </ng-container>
+
+        <!-- Discount Column -->
+        <ng-container matColumnDef="discount">
+            <mat-header-cell *matHeaderCellDef>Discount</mat-header-cell>
+            <mat-cell *matCellDef="let element; let i = index;">
+                {{ element.discount | number:'.2' }}
+            </mat-cell>
+        </ng-container>
+
+        <!-- Quantity Column -->
+        <ng-container matColumnDef="quantity">
+            <mat-header-cell *matHeaderCellDef>Quantity</mat-header-cell>
+            <mat-cell *matCellDef="let element; let i = index;">
+                {{ element.quantity }}
+            </mat-cell>
+        </ng-container>
+
+        <!-- Net Price Column -->
+        <ng-container matColumnDef="netPrice">
+            <mat-header-cell *matHeaderCellDef>Net Price</mat-header-cell>
+            <mat-cell *matCellDef="let element; let i = index;">
+                {{ ((element.price - element.discount) * element.quantity) | number:'.2' }}
+            </mat-cell>
+        </ng-container>
+
+        <!-- Store Column -->
+        <ng-container matColumnDef="store">
+            <mat-header-cell *matHeaderCellDef>Store</mat-header-cell>
+            <mat-cell *matCellDef="let element; let i = index;">
+                {{ element.branchTitle }}
+            </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="columnsList"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: columnsList"></mat-row>
+
+    </mat-table>
+
+</div>

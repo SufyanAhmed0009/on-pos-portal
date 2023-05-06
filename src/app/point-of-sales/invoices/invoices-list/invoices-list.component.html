@@ -1,0 +1,47 @@
+<mat-table [dataSource]="invoices" class="mat-elevation-z8">
+
+    <ng-container matColumnDef="billNumber">
+        <mat-header-cell *matHeaderCellDef>Bill Number</mat-header-cell>
+        <mat-cell *matCellDef="let invoice">
+            {{ invoice.billNumber }}
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="billDate">
+        <mat-header-cell *matHeaderCellDef>Bill Date</mat-header-cell>
+        <mat-cell *matCellDef="let invoice">
+            {{ invoice.billDate | date: 'short' }}
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="totalItems">
+        <mat-header-cell *matHeaderCellDef>Total Items</mat-header-cell>
+        <mat-cell *matCellDef="let invoice">
+            {{ invoice.totalItems }}
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="netAmount">
+        <mat-header-cell *matHeaderCellDef>Net Amount</mat-header-cell>
+        <mat-cell *matCellDef="let invoice">
+            Rs. {{ invoice.netAmount | number:'.2' }}
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="amountPaid">
+        <mat-header-cell *matHeaderCellDef>Amount Paid</mat-header-cell>
+        <mat-cell *matCellDef="let invoice">
+            Rs. {{ invoice.paidAmount | number:'.2' }}
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="amountReturned">
+        <mat-header-cell *matHeaderCellDef>Amount Returned</mat-header-cell>
+        <mat-cell *matCellDef="let invoice">
+            Rs. {{ invoice.amountReturned | number:'.2' }}
+        </mat-cell>
+    </ng-container>
+    <mat-header-row *matHeaderRowDef="columns"></mat-header-row>
+    <mat-row (click)="onSelectInvoice(row)" *matRowDef="let row; columns: columns;"></mat-row>
+
+</mat-table>

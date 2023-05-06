@@ -1,0 +1,199 @@
+<mat-tab-group>
+    <mat-tab label="Details">
+
+        <div style="padding: 10px;">
+            <h2 [align]="'end'" class="invoice-heading">
+                {{ invoice.billNumber }}
+            </h2>
+            <div>
+
+                <table>
+                    <tr>
+                        <td>Bill Date:</td>
+                        <td><strong>{{ invoice.billDate | date:'short' }}</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Remarks:</td>
+                        <td><strong>{{ invoice.remarks ? invoice.remarks : 'NA'  }}</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Reference:</td>
+                        <td><strong>{{ invoice.referenceNumber ? invoice.referenceNumber : 'NA'  }}</strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Cash Paid:</td>
+                        <td><strong>Rs. {{ invoice.paidAmount | number:".0" }}</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Cash Returned:</td>
+                        <td><strong>Rs. {{ invoice.amountReturned | number:".0" }} </strong></td>
+                    </tr>
+                    <tr>
+                        <td>Bill Discount:</td>
+                        <td><strong>Rs. {{ invoice.billDiscount | number:".0" }} </strong></td>
+                    </tr>
+                </table>
+
+
+
+                <br>
+
+            </div>
+
+            <!-- MAT TABLE STARTS HERE  -->
+            <br>
+            <mat-table [dataSource]="invoice.listOfInvoiceItems" class="mat-elevation-z8">
+
+                <!-- Item Number Column -->
+                <ng-container matColumnDef="number">
+                    <mat-header-cell *matHeaderCellDef>No.</mat-header-cell>
+                    <mat-cell *matCellDef="let element; let i = index">
+                        {{ i+1 }}
+                    </mat-cell>
+                    <mat-footer-cell mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                </ng-container>
+
+                <!-- Item Name Column -->
+                <ng-container matColumnDef="name">
+                    <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{ element.title }}
+                    </mat-cell>
+                    <mat-footer-cell mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                </ng-container>
+
+                <!-- Item Quantity Column -->
+                <ng-container matColumnDef="quantity">
+                    <mat-header-cell *matHeaderCellDef>Quantity</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{ element.quantity }}
+                    </mat-cell>
+                    <mat-footer-cell mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                </ng-container>
+
+                <!-- Item Price Column -->
+                <ng-container matColumnDef="price">
+                    <mat-header-cell *matHeaderCellDef>Price</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        Rs. {{ element.price }}
+                    </mat-cell>
+                    <mat-footer-cell mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                </ng-container>
+
+
+                <!-- TotalPrice Column -->
+                <ng-container matColumnDef="totalPrice">
+                    <mat-header-cell *matHeaderCellDef>Total Price</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        Rs. {{ element.price * element.quantity }}
+                    </mat-cell>
+                    <mat-footer-cell mat-footer-cell *matFooterCellDef>
+                        <strong>Rs. {{ getTotalPrice() }}</strong>
+                    </mat-footer-cell>
+                </ng-container>
+
+                <!-- Item Discount Column -->
+                <ng-container matColumnDef="discount">
+                    <mat-header-cell *matHeaderCellDef>Discount</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        Rs. {{ element.discountAmount }}
+                    </mat-cell>
+                    <mat-footer-cell mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                </ng-container>
+
+                <!-- Total Discount Column -->
+                <ng-container matColumnDef="totalDiscount">
+                    <mat-header-cell *matHeaderCellDef>Total Discount</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        Rs. {{ element.discountAmount * element.quantity }}
+                    </mat-cell>
+                    <mat-footer-cell mat-footer-cell *matFooterCellDef>
+                        <strong>Rs. {{ invoice.totalDiscount  }}</strong>
+                    </mat-footer-cell>
+                </ng-container>
+
+                <!-- Net Price Column -->
+                <ng-container matColumnDef="netPrice">
+                    <mat-header-cell *matHeaderCellDef>Net Price</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        Rs. {{ (element.price - element.discountAmount) * element.quantity }}
+                    </mat-cell>
+                    <mat-footer-cell mat-footer-cell *matFooterCellDef>
+                        <strong>Rs. {{ invoice.netAmount }}</strong>
+                    </mat-footer-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="columnsList"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: columnsList;"></mat-row>
+                <mat-footer-row *matFooterRowDef="columnsList"></mat-footer-row>
+
+            </mat-table>
+
+            <br>
+
+        </div>
+    </mat-tab>
+    <mat-tab label="Print">
+
+        <div style="padding: 10px;">
+            <div id="print-section" class="invoice-box">
+
+                <span [innerHtml]="getDottedLine()"></span><br>
+
+                <span [innerHtml]="getSpaces(19)"></span>RECEIPT<br>
+
+                <span [innerHtml]="getDottedLine()"></span><br>
+                Store. &nbsp;&nbsp;: {{ getStoreName() }} <br>
+                Bill No. : {{ invoice.billNumber }} <br>
+                Date<span [innerHtml]="getSpaces(5)"></span>: {{ invoice.billDate | date:'mediumDate' }} <br>
+                Time<span [innerHtml]="getSpaces(5)"></span>: {{ invoice.billDate | date:'mediumTime' }} <br>
+
+                <span [innerHtml]="getDottedLine()"></span><br>
+
+                ITEM DESCRIPTION<span [innerHtml]="getSpaces(5)"></span>QTY PRICE DISCOUNT SUBTOTAL<br>
+
+                <span [innerHtml]="getDottedLine()"></span><br>
+
+
+                <div *ngFor="let product of invoice.listOfInvoiceItems">
+                    <span [innerHtml]="product.title"></span><br>
+                    <span [innerHtml]="getSpaces(18)"></span>
+                    <span [innerHtml]="getTwoPlaceNumber(product.quantity)"></span>&nbsp;
+                    <span [innerHtml]="getFivePlaceNumber(product.price)"></span>&nbsp;
+                    <span [innerHtml]="getFivePlaceNumber(product.discountAmount)"></span>&nbsp;
+                    <span
+                        [innerHtml]="getFivePlaceNumber(product.quantity * (product.price - product.discountAmount))"></span>
+                </div>
+                <span [innerHtml]="getDottedLine()"></span><br>
+
+                Total Amount<span [innerHtml]="getSpaces(28)"></span><span
+                    [innerHtml]="getFivePlaceNumber(getTotalPrice())"></span><br>
+                Total Discount<span [innerHtml]="getSpaces(26)"></span><span
+                    [innerHtml]="getFivePlaceNumber(invoice.totalDiscount)"></span><br>
+                Net Amount<span [innerHtml]="getSpaces(30)"></span><span
+                    [innerHtml]="getFivePlaceNumber(invoice.netAmount)"></span><br>
+                Bill Discount<span [innerHtml]="getSpaces(27)"></span><span
+                    [innerHtml]="getFivePlaceNumber(invoice.billDiscount)"></span><br>
+                Cash Paid<span [innerHtml]="getSpaces(31)"></span><span
+                    [innerHtml]="getFivePlaceNumber(invoice.paidAmount)"></span><br>
+                Cash Returned<span [innerHtml]="getSpaces(27)"></span><span
+                    [innerHtml]="getFivePlaceNumber(invoice.amountReturned)"></span><br>
+
+                <span [innerHtml]="getDottedLine()"></span><br> 
+
+                <span [innerHtml]="getSpaces(12)"></span>THANK YOU FOR SHOPPING <br>
+
+                <span [innerHtml]="getDottedLine()"></span><br>
+                <br>
+            </div>
+
+
+            <div [align]="'end'">
+                <button printSectionId="print-section" ngxPrint [color]="'primary'" mat-mini-fab>
+                    <i class="fa fa-print"></i>
+                </button>
+            </div>
+        </div>
+    </mat-tab>
+</mat-tab-group>

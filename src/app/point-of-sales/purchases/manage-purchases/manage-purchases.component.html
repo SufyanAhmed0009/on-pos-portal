@@ -1,0 +1,88 @@
+<page-box>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="row">
+                <div class="col-6">
+                    <h3 style="padding-top: 10px; font-weight: bold;">Add Purchase:</h3>
+                </div>
+                <div class="col-6" [align]="'end'">
+                    <button matTooltip="Upload Sheet" [routerLink]="['/pos/purchases/upload-sheet']" mat-mini-fab
+                        [color]="'default'">
+                        <i class="fa fa-upload"></i>
+                    </button>
+                    &nbsp;
+                    <button matTooltip="View History" (click)="onHistory()" mat-mini-fab [color]="'default'">
+                        <i class="fa fa-history"></i>
+                    </button>
+                </div>
+            </div>
+            <br>
+            <product-barcode-find-selector (selected)="onAddProduct($event)" [warehouseId]="selectedWh"></product-barcode-find-selector>
+            <span *ngIf="showTitle">
+                <product-find-selector (selected)="onAddProduct($event)" [warehouseId]="selectedWh">
+                </product-find-selector>
+            </span>
+        </div>
+        <div class="col-md-9">
+            <div class="row">
+                <div class="col-md-3">
+                    <mat-form-field style="width: 100%;">
+                        <mat-select [(ngModel)]="selectedPOId" placeholder="Pre-Purchase Order">
+                            <mat-option [value]="element.id" *ngFor="let element of PurchaseOrderList">
+                                {{ element.title }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="col-md-3">
+                    <mat-form-field style="width: 100%;">
+                        <input matInput autocomplete="off" [(ngModel)]="deliveryOrderNo"
+                            placeholder="Delivery order Number" type="text">
+                    </mat-form-field>
+                </div>
+                <div class="col-md-3">
+                    <mat-form-field style="width: 75%;">
+                        <mat-label>Select Warehouse:</mat-label>
+                        <mat-select
+                            [disabled]="(selectedSupplier == null && purchaseProducts.length!=0)  || (selectedSupplier && purchaseProducts.length!=0)"
+                            (selectionChange)="onWarehouseSelected()" [(ngModel)]="selectedWh">
+                            <mat-option [value]="option.id" *ngFor="let option of whList">
+                                {{option.title}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <button (click)="clearWHSelection()" mat-icon-button>
+                        <mat-icon>close</mat-icon>
+                    </button>
+                </div>
+                <div class="col-md-3">
+                    <mat-form-field style="width: 75%;">
+                        <mat-select (selectionChange)="onSupplierSelected()" [(ngModel)]="selectedSupplier"
+                            placeholder="Vendor">
+                            <mat-option [value]="supplier.id" *ngFor="let supplier of suppliersList">
+                                {{ supplier.title }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <button (click)="clearSupplierSelection()" mat-icon-button>
+                        <mat-icon>close</mat-icon>
+                    </button>
+                </div>
+            </div>
+          
+            <p style="color: red;"> * Difference between cost and retail price is less or greater than 20%</p>
+            <selected-products [products]="purchaseProducts"></selected-products>
+            <br>
+            <div style="height: 50px;" [align]="'end'">
+                <!-- <button *ngIf="!submitting"
+                    [disabled]="getTotalCost() == 0 || (!selectedWh && !selectedSupplier) || (selectedWh && selectedSupplier)"
+                    (click)="onAddPurchase()" mat-raised-button [color]="'primary'">Submit</button> -->
+                <button *ngIf="!submitting"
+                    [disabled]="(!selectedWh && !selectedSupplier) || (selectedWh && selectedSupplier)"
+                    (click)="onAddPurchase()" mat-raised-button [color]="'primary'">Submit</button>
+                <mat-progress-bar *ngIf="submitting" mode="indeterminate"></mat-progress-bar>
+            </div>
+            <br>
+        </div>
+    </div>
+</page-box>

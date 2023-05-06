@@ -1,0 +1,112 @@
+<page-box>
+
+    <div class="flex">
+        <h3><strong>Daily Sales Statistics</strong></h3>
+        <div class="spacer"></div>
+        <mat-spinner *ngIf="loadingDailySales || loadingInventory || loadingPendingSale" [diameter]="30.0">
+        </mat-spinner>
+    </div>
+
+    <mat-divider></mat-divider>
+    <br>
+
+    <div class="row">
+        <div class="col-4" *ngIf="!this.nonEnablerOwner">
+            <div class="sales-stats">
+                <table class="sales-table mat-elevation-z8 inventory" style="border-bottom: none;">
+                    <thead>
+                        <tr>
+                            <th>Available Inventory</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Available Quantity</td>
+                            <td>{{ inventory.quantity | number:'.0' }}</td>
+                        </tr>
+                        <tr>
+                            <td>Available Worth</td>
+                            <td>Rs. {{ inventory.worth | number:'.0' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="spacer"></div>
+                <table class="sales-table mat-elevation-z8 inventory" style="border-bottom: none;">
+                    <thead>
+                        <tr>
+                            <th>Orders In Progress</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>No. Of Orders</td>
+                            <td>{{ pendingSales?.orderCount | number:'.0' }}</td>
+                        </tr>
+                        <tr>
+                            <td>Total Worth</td>
+                            <td>Rs. {{ pendingSales?.cogs | number:'.0' }}</td>
+                        </tr>
+                        <tr>
+                            <td>Possible Profit</td>
+                            <td>Rs. {{ pendingSales?.profit | number:'.0' }}</td>
+                        </tr>
+                        <tr>
+                            <td>Running Ground Total</td>
+                            <td>Rs. {{ (salesTotal?.cogs + inventory?.worth + pendingSales?.cogs) | number:'.0' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div  class="col">
+            <div class="mat-elevation-z8">
+                <table class="sales-table daily" style="border-bottom: none;">
+                    <thead>
+                        <tr style="border-bottom: none;">
+                            <th>Date</th>
+                            <th>Sales</th>
+                            <th>Cost of Goods Sold</th>
+                            <th>Orders</th>
+                            <th>Profit</th>
+                        </tr>
+                    </thead>
+                </table>
+                <cdk-virtual-scroll-viewport itemSize="50">
+                    <table class="sales-table daily">
+                        <tbody>
+                            <tr *cdkVirtualFor="let sale of dailySalesList">
+                                <td>{{ sale.date }}</td>
+                                <td>Rs. {{ sale.sale | number:'.0' }}</td>
+                                <td>Rs. {{ sale.cogs | number:'.0' }}</td>
+                                <td>{{ sale.orderCount }}</td>
+                                <td>
+                                    Rs. {{ sale.profit | number:'.0' }}
+                                    <i *ngIf="sale.profit > 0" class="fa fa-arrow-up green"></i>
+                                    <i *ngIf="sale.profit < 0" class="fa fa-arrow-down red"></i>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </cdk-virtual-scroll-viewport>
+                <table class="sales-table daily" style="border-bottom: none;">
+                    <thead>
+                        <tr style="border-bottom: none;">
+                            <th>Total: </th>
+                            <th>Rs. {{ salesTotal?.sale | number:'.0' }}</th>
+                            <th>Rs. {{ salesTotal?.cogs | number:'.0' }}</th>
+                            <th>{{ salesTotal?.orderCount }}</th>
+                            <th>
+                                Rs. {{ salesTotal?.profit | number:'.0' }}
+                                <i *ngIf="salesTotal?.profit > 0" class="fa fa-arrow-up green"></i>
+                                <i *ngIf="salesTotal?.profit < 0" class="fa fa-arrow-down red"></i>
+                            </th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</page-box>

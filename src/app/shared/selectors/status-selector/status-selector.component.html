@@ -1,0 +1,18 @@
+<mat-form-field class="width-eighty">
+
+    <span matPrefix>
+        <i class="fa fa-check-square"></i> &nbsp;
+    </span>
+    <input matInput placeholder="Status: " [matAutocomplete]="auto" [formControl]="inputControl">
+    
+    <mat-autocomplete (optionSelected)="optionSelected($event)" #auto="matAutocomplete">
+        <mat-option *ngFor="let status of statusList" [value]="status.title">
+            {{ status.title }}
+        </mat-option>
+    </mat-autocomplete>
+
+</mat-form-field>
+
+<button (click)="clearSelection()" mat-icon-button>
+    <mat-icon>close</mat-icon>
+</button>

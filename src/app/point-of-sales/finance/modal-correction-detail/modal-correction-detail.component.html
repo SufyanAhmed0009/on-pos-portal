@@ -1,0 +1,58 @@
+<page-box>
+    
+    <h2 class="invoice-heading">
+        <div class="row">
+            <div class="col-6" style="padding-top: 8px;">Correction Details</div>
+            <div [align]="'end'" class="col-6">
+                <button (click)="onClose()" mat-icon-button>
+                    <mat-icon>close</mat-icon>
+                </button>
+            </div>
+        </div>
+    </h2>
+
+    <mat-table [dataSource]="response" class="mat-elevation-z8">
+
+        <ng-container matColumnDef="No">
+            <mat-header-cell *matHeaderCellDef>No</mat-header-cell>
+            <mat-cell *matCellDef="let element;let i = index">
+                {{ i+1 }}
+            </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="Comment">
+            <mat-header-cell *matHeaderCellDef>Comment</mat-header-cell>
+            <mat-cell *matCellDef="let element;">
+                {{ element.comment }}
+            </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="costBefore">
+            <mat-header-cell *matHeaderCellDef>Cost Before</mat-header-cell>
+            <mat-cell *matCellDef="let element;">
+                {{ element.costBefore }}
+            </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="quantity">
+            <mat-header-cell *matHeaderCellDef>Quantity</mat-header-cell>
+            <mat-cell *matCellDef="let element;">
+                {{ element.quantity == null ? "N/A": element.quantity}}
+            </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="currentQuantity">
+            <mat-header-cell *matHeaderCellDef>Current Quantity</mat-header-cell>
+            <mat-cell *matCellDef="let element;">
+                {{ element.currentQuantity == null ? "N/A": element.currentQuantity }}
+            </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="columnsList"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: columnsList;"></mat-row>
+
+    </mat-table> 
+
+   
+
+</page-box>

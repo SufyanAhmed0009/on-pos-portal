@@ -1,0 +1,107 @@
+<h2 class="item-history-heading">
+    <div class="row">
+        <div class="col-6" style="padding-top: 8px;">Item Sale History</div>
+        <div [align]="'end'" class="col-6">
+            <button (click)="onClose()" mat-icon-button>
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+    </div>
+</h2>
+
+<div class="container">
+    <mat-card class="card-box">
+        <div class="innerbox">
+            <div class="row">
+                <div class="col-md-5">
+                    <mat-form-field style="width: 100%;">
+                        <mat-label>Choose a date</mat-label>
+                        <input matInput [matDatepicker]="picker" [max]="maxDate" (dateChange)="dateFilter($event)"
+                            [formControl]="currentDate">
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                    </mat-form-field>
+                </div>
+                <div class="col-md-5">
+                    <mat-form-field>
+                        <input matInput placeholder="Range" value=10 type="number" min="0" name="range"
+                            (input)="rangeFilter($event.target.value)">
+                    </mat-form-field>
+                </div>      
+            </div>
+
+            <mat-divider></mat-divider>   
+            <br>
+            <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+            
+            <div *ngIf=" itemHistoryList?.length == 0">
+                No Data Available!
+            </div>
+
+            <mat-table *ngIf=" itemHistoryList?.length > 0" [dataSource]="itemHistoryList" class="mat-elevation-z8">
+
+                <!-- Item ID Column -->
+                <ng-container matColumnDef="id">
+                    <mat-header-cell *matHeaderCellDef>Item Id</mat-header-cell>
+                    <mat-cell *matCellDef="let element;">
+                        {{ element.id ? element.id : 'NA' }}
+                    </mat-cell>
+                </ng-container>
+
+                <!-- Item Name Column -->
+                <ng-container matColumnDef="title">
+                    <mat-header-cell *matHeaderCellDef>Title</mat-header-cell>
+                    <mat-cell *matCellDef="let element;">
+                        {{ element.title ? element.title : 'NA' }}
+                    </mat-cell>
+                </ng-container>
+
+                <!-- Item Quantity Column -->
+                <ng-container matColumnDef="quantity">
+                    <mat-header-cell *matHeaderCellDef>Quantity</mat-header-cell>
+                    <mat-cell *matCellDef="let element;">
+                        {{ element.quantity? element.quantity : 'NA' }}
+                    </mat-cell>
+                </ng-container>
+
+                <!-- Cost Column -->
+                <ng-container matColumnDef="cost">
+                    <mat-header-cell *matHeaderCellDef>Cost</mat-header-cell>
+                    <mat-cell *matCellDef="let element;">
+                        Rs. {{ element.cost | number:'.2' }}
+                    </mat-cell>
+                </ng-container>
+
+                <!-- Price Column -->
+                <ng-container matColumnDef="price">
+                    <mat-header-cell *matHeaderCellDef>Price</mat-header-cell>
+                    <mat-cell *matCellDef="let element;">
+                        Rs. {{ element.price | number:'.2' }}
+                    </mat-cell>
+                </ng-container>
+
+                <!-- Status Column -->
+                <ng-container matColumnDef="status">
+                    <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+                    <mat-cell *matCellDef="let element;">
+                        {{ element.status }}
+                    </mat-cell>
+                </ng-container>
+
+                <!-- Date Column -->
+                <ng-container matColumnDef="date">
+                    <mat-header-cell *matHeaderCellDef>Date</mat-header-cell>
+                    <mat-cell *matCellDef="let order;">
+                        {{ order.date | date:'dd/MM/yyyy' }}
+                    </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="columnsList;"></mat-header-row>
+                <mat-row (click)="onSelectItem(row)" *matRowDef="let row; columns: columnsList;">
+                </mat-row>
+
+            </mat-table>
+            <!-- END OF MAT-TABLE -->
+        </div>
+    </mat-card>
+</div>

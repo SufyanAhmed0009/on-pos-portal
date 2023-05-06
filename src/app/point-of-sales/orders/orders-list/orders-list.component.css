@@ -1,0 +1,44 @@
+.mat-column-orderNumber {
+    flex: 0 0 10% !important;
+    width: 10% !important;
+}
+
+.mat-column-totalAmount {
+    flex: 0 0 10% !important;
+    width: 10% !important;
+}
+
+.mat-column-status {
+    flex: 0 0 10% !important;
+    width: 10% !important;
+}
+
+.mat-column-date {
+    flex: 0 0 8% !important;
+    width: 8% !important;
+}
+
+.mat-column-tat {
+    flex: 0 0 8% !important;
+    width: 8% !important;
+    justify-content: center;
+}
+
+.mat-column-delivered {
+    flex: 0 0 8% !important;
+    width: 8% !important;
+}
+
+.mat-column-expected {
+    flex: 0 0 8% !important;
+    width: 8% !important;
+}
+
+.mat-row:hover {
+    background-color: #0002;
+    cursor: pointer;
+}
+
+.active {
+    background-color: #ccf;
+}

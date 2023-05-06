@@ -1,0 +1,82 @@
+<mat-card class="card-box">
+    <div class="innerbox">
+        <search-slice (search)="onSearch($event)" (cancel)="onCancelSearch()" (refresh)="onRefresh()"
+            [title]="'Manage Products'">
+            <button (click)="onUpdateProducts()" matTooltip="Save" mat-icon-button>
+                <mat-icon>check</mat-icon>
+            </button>
+            <button (click)="onDownload()" matTooltip="Download" mat-icon-button mat-mini-fab [color]="'default'">
+                <i class="fa fa-download"></i>
+            </button>
+            &nbsp;
+            <a href="../../../../assets/item-update.csv" download *ngIf="isAllowedUpload">
+                <mat-icon matTooltip="Download Sample" style="vertical-align: middle;color: black;">get_app</mat-icon>
+            </a>
+            &nbsp;
+            &nbsp;
+            <span *ngIf="isAllowedUpload">
+                <input type="file" id="file" (change)="onSelected($event)" >
+                <label for="file" class="btn-2" matTooltip="Upload">
+                    <mat-icon>publish</mat-icon>
+                </label>
+            </span>
+        </search-slice>
+        <mat-divider></mat-divider>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div style="padding-top: 15px;">
+                    <!-- STATUS FILTER -->
+                    <mat-button-toggle-group (change)="onStatusChanged()" [(ngModel)]="selectedStatus" name="fontStyle"
+                        aria-label="Font Style">
+                        <mat-button-toggle *ngFor="let status of statusToggleList" [value]="status.value">
+                            {{ status.title }}
+                        </mat-button-toggle>
+                    </mat-button-toggle-group>
+                </div>
+            </div>
+            <div class="col-md-3" style="padding-top: 15px;">
+                <!-- QUANTITY FILTER -->
+                <mat-button-toggle-group (change)="onQuantityChanged()" [(ngModel)]="selectedQuantity" name="fontStyle"
+                    aria-label="Font Style">
+                    <mat-button-toggle *ngFor="let element of quantityToggleList" [value]="element.value">
+                        {{ element.title }}
+                    </mat-button-toggle>
+                </mat-button-toggle-group>
+            </div>
+            <div class="col-md-2" style="padding-top: 15px;">
+                <!-- DISCOUNT FILTER -->
+                <mat-button-toggle-group (change)="onDiscountChanged()" [(ngModel)]="selectedDiscount" name="fontStyle"
+                    aria-label="Font Style">
+                    <mat-button-toggle *ngFor="let element of discountToggleList" [value]="element.value">
+                        {{ element.title }}
+                    </mat-button-toggle>
+                </mat-button-toggle-group>
+            </div>
+            <div class="col-md-3" style="padding-top: 15px;">
+                <div class="row">
+                    <div class="col-md-6">
+                        <!-- <stores-selector (selected)="onStoreSelected($event)"></stores-selector> -->
+                    </div>
+                    <div class="col-md-6">
+                        <small>Selected Store:</small><br>
+                        <strong>{{ selectedStore.title }}</strong>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        <br>
+
+        <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
+        <products-list (updateProduct)="onUpdateProduct($event)" (reduceQuantity)="onReduceQuantity($event)"
+            [products]="products"></products-list>
+
+        <br>
+        <mat-paginator [pageIndex]="page.page" [length]="count" [pageSize]="page.size"
+            [pageSizeOptions]="[5, 10, 25, 100]" (page)="onPageChanged($event)">
+        </mat-paginator>
+    </div>
+</mat-card>

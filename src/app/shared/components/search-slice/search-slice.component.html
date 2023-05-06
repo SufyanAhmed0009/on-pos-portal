@@ -1,0 +1,33 @@
+<div class="search-bar">
+
+    <!-- Title -->
+    <h3 style="padding-top: 10px;">
+        <strong>{{ title }}</strong>
+    </h3>
+
+    <!-- Spacer -->
+    <div class="spacer"></div>
+
+    <form [formGroup]="searchForm" (ngSubmit)="onSearch()">
+
+        <mat-form-field>
+            <input formControlName="input" matInput autocomplete="off" [placeholder]="searchTitle ? searchTitle : 'Search Here: '" type="text">
+        </mat-form-field>
+
+        <button matTooltip="Search" type="submit" [disabled]="!searchForm.valid" mat-icon-button>
+            <mat-icon>search</mat-icon>
+        </button> 
+
+        <button matTooltip="Cancel Search" (click)="onCancel()" type="button" mat-icon-button>
+            <mat-icon>close</mat-icon>
+        </button>
+        <button matTooltip="Refresh" (click)="onRefresh()" type="button" mat-icon-button>
+            <mat-icon>refresh</mat-icon>
+        </button>
+
+        <!-- Extra Buttons -->
+        <ng-content></ng-content>
+    
+    </form>
+
+</div>

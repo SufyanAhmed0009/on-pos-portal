@@ -1,0 +1,31 @@
+.mat-column-id {
+    flex: 0 0 10% !important;
+    width: 10% !important;
+}
+
+.mat-column-date {
+    flex: 0 0 20% !important;
+    width: 20% !important;
+}
+
+.mat-column-total {
+    flex: 0 0 20% !important;
+    width: 20% !important;
+} 
+
+.mat-column-approved {
+    flex: 0 0 15% !important;
+    width: 15% !important;
+    justify-content: center;
+}
+
+.mat-column-download {
+    flex: 0 0 10% !important;
+    width: 10% !important;
+    justify-content: center;
+}
+
+.mat-row:hover {
+    background-color: #ccf;
+    cursor: pointer;
+}

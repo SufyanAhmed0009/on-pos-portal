@@ -1,0 +1,13 @@
+.btn2{
+    background-color: #993399;
+}
+
+.headingField {
+    color: black;
+}
+
+.mat-column-actions {
+    flex: 0 0 15% !important;
+    width: 15% !important;
+    justify-content: center;
+}

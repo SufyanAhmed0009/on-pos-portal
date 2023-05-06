@@ -1,0 +1,128 @@
+<mat-horizontal-stepper [linear]="true" #stepper>
+    <mat-step [stepControl]="paymentForm">
+        <form [formGroup]="paymentForm">
+            <ng-template matStepLabel>Enter Payment Info</ng-template>
+
+            <div class="payment-box">
+                <div class="row">
+                    <div class="col-md-5">
+                        <i class="fa fa-money"></i>
+                        &nbsp;
+                        Bill Amount:
+                    </div>
+                    <div class="col-md-5">
+                        <strong>Rs. {{ invoiceDetails.invoice.netAmount }}</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="payment-box">
+                <div class="row">
+                    <div class="col-md-5">
+                        <i class="fa fa-gift"></i>
+                        &nbsp;
+                        Bill Discount
+                    </div>
+                    <div class="col-md-5">
+                        <strong>Rs. {{ data.invoiceDetails.invoice.billDiscount }}</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="payment-box">
+                <div class="row">
+                    <div class="col-md-5">
+                        <i class="fa fa-refresh"></i>
+                        &nbsp;
+                        Return Amount:
+                    </div>
+                    <div class="col-md-5">
+                        <strong>Rs. {{ getReturnAmount() }}</strong>
+                    </div>
+                </div>
+            </div>
+
+            <br>
+            <br>
+            <div class="row">
+                <div class="col-6">
+                    <mat-form-field style="width: 100%;">
+                        <input type="number" autocomplete="off" matInput placeholder="Cash Tendered" formControlName="paidAmount" required>
+                    </mat-form-field>
+                </div>
+                <div class="col-6">
+                    <mat-form-field style="width: 100%;">
+                        <input autocomplete="off" type="number" matInput placeholder="Bill Discount"
+                            [(ngModel)]="data.invoiceDetails.invoice.billDiscount"
+                            [ngModelOptions]="{standalone: true}" required>
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <div>
+                <button [color]="'primary'" [disabled]=" !isPaymentValid()" mat-raised-button
+                    matStepperNext>Next</button>
+            </div>
+        </form>
+    </mat-step>
+    <mat-step>
+        <ng-template matStepLabel>Receipt</ng-template>
+
+        <div id="print-section" class="invoice-box">
+
+            <span [innerHtml]="getDottedLine()"></span><br>
+
+            <span [innerHtml]="getSpaces(19)"></span>RECEIPT<br>
+
+            <span [innerHtml]="getDottedLine()"></span><br>
+            Store. &nbsp;&nbsp;: {{ storeName }} <br>
+            Bill No. : {{ invoiceDetails.invoice.billNumber }} <br>
+            Date<span [innerHtml]="getSpaces(5)"></span>: {{ invoiceDetails.invoice.billDate | date:'mediumDate' }} <br>
+            Time<span [innerHtml]="getSpaces(5)"></span>: {{ invoiceDetails.invoice.billDate | date:'mediumTime' }} <br>
+
+            <span [innerHtml]="getDottedLine()"></span><br>
+
+            ITEM <span [innerHtml]="getSpaces(10)"></span>QTY&nbsp;&nbsp;PRICE&nbsp;&nbsp;DISCOUNT&nbsp;&nbsp;SUBTOTAL<br>
+
+            <span [innerHtml]="getDottedLine()"></span><br>
+
+
+            <div *ngFor="let product of invoiceProducts">
+                <span [innerHtml]="product.name"></span><br>
+                <span [innerHtml]="getSpaces(14)"></span>
+                <span [innerHtml]="getTwoPlaceNumber(product.quantity)"></span>&nbsp;
+                <span [innerHtml]="getFivePlaceNumber(product.price)"></span>&nbsp;
+                <span [innerHtml]="getFivePlaceNumber(product.discount)"></span>&nbsp;
+                <span [innerHtml]="getFivePlaceNumber(product.quantity * (product.price - product.discount))"></span>
+            </div>
+            <span [innerHtml]="getDottedLine()"></span><br>
+
+            Total Amount<span [innerHtml]="getSpaces(25)"></span><span
+                [innerHtml]="getFivePlaceNumber(invoiceDetails.invoice.totalAmount)"></span><br>
+            Total Discount<span [innerHtml]="getSpaces(23)"></span><span
+                [innerHtml]="getFivePlaceNumber(invoiceDetails.invoice.totalDiscount)"></span><br>
+            Net Amount<span [innerHtml]="getSpaces(27)"></span><span
+                [innerHtml]="getFivePlaceNumber(invoiceDetails.invoice.netAmount)"></span><br>
+            Bill Discount<span [innerHtml]="getSpaces(24)"></span><span
+                [innerHtml]="getFivePlaceNumber(invoiceDetails.invoice.billDiscount)"></span><br>
+            Cash Paid<span [innerHtml]="getSpaces(28)"></span><span
+                [innerHtml]="getFivePlaceNumber(getPaymentAmount())"></span><br>
+            Cash Returned<span [innerHtml]="getSpaces(24)"></span><span
+                [innerHtml]="getFivePlaceNumber(getReturnAmount())"></span><br>
+
+            <span [innerHtml]="getDottedLine()"></span><br>
+
+            <span [innerHtml]="getSpaces(12)"></span>THANK YOU FOR SHOPPING <br>
+
+            <span [innerHtml]="getDottedLine()"></span><br>
+            <br>
+        </div>
+
+        <div [align]="'end'">
+            <button [color]="'primary'" (click)="onSave()" mat-raised-button>Save</button>
+            &nbsp;
+            <button [color]="'primary'" printSectionId="print-section" (click)="onSave()" ngxPrint
+                mat-raised-button>Save & Print</button>
+        </div>
+    </mat-step>
+</mat-horizontal-stepper>

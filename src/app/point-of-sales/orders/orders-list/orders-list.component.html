@@ -1,0 +1,83 @@
+<mat-table [dataSource]="orders" class="mat-elevation-z8">
+    <ng-container matColumnDef="orderNumber">
+        <mat-header-cell *matHeaderCellDef>Order No.</mat-header-cell>
+        <mat-cell *matCellDef="let order;">
+            {{ order.orderNumber }}
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="customer">
+        <mat-header-cell *matHeaderCellDef>Customer</mat-header-cell>
+        <mat-cell *matCellDef="let order;">
+            {{ order.userName }}
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="franchise">
+        <mat-header-cell *matHeaderCellDef>Franchise</mat-header-cell>
+        <mat-cell *matCellDef="let order;">
+            {{ order.franchiseTitle }}
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="totalAmount">
+        <mat-header-cell *matHeaderCellDef>Total Amount</mat-header-cell>
+        <mat-cell *matCellDef="let order;">
+            Rs. {{ order.branchTotalAmount | number:'.2' }}
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="status">
+        <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+        <mat-cell *matCellDef="let order;">
+            {{ order.status }}
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="expected">
+        <mat-header-cell *matHeaderCellDef>Expected at</mat-header-cell>
+        <mat-cell *matCellDef="let order;">
+            <span *ngIf="order.timeLog?.expected">
+                {{ order.timeLog?.expected | date:'dd/MM/yy' }}
+                <br>
+                {{ order.timeLog?.expected | date:'shortTime' }}
+            </span>
+            <span *ngIf="!order.timeLog?.expected">
+                NA
+            </span>
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="delivered">
+        <mat-header-cell *matHeaderCellDef>Delivered at</mat-header-cell>
+        <mat-cell *matCellDef="let order; let i = index;">
+            <span *ngIf="order.timeLog?.delivered">
+                {{ order.timeLog?.delivered | date:'dd/MM/yy' }}
+                <br>
+                {{ order.timeLog?.delivered | date:'shortTime' }}
+            </span>
+        </mat-cell>
+    </ng-container>
+
+
+    <ng-container matColumnDef="date">
+        <mat-header-cell *matHeaderCellDef>Placed at</mat-header-cell>
+        <mat-cell *matCellDef="let order;">
+            {{ getDate(order.timeLog.placed) | date:'dd/MM/yy' }} <br>
+            {{ getDate(order.timeLog.placed) | date:'shortTime' }}
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="tat">
+        <mat-header-cell *matHeaderCellDef>TAT</mat-header-cell>
+        <mat-cell *matCellDef="let order;">
+            {{ getHoursMinutes(order.tat) }}
+        </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="columnsList;"></mat-header-row>
+    <mat-row (click)="onSelectOrder(row)" [ngClass]="{'active': row.status == 'New' }"
+        *matRowDef="let row; columns: columnsList;">
+    </mat-row>
+
+</mat-table>

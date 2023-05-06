@@ -1,0 +1,12 @@
+<div>
+  <p>
+      {{ isDownloadable?'Data downloaded!':'Downloading data..' }}
+  </p>
+  <!-- <mat-progress-bar *ngIf="showProgressBar" [value]="currentProgress"></mat-progress-bar> -->
+</div>
+<br>
+<div [align]="'end'">
+  <button (click)="onSave()" [disabled]="!isDownloadable" mat-mini-fab>
+      <i class="fa fa-save"></i>
+  </button>
+</div>

@@ -1,0 +1,19 @@
+<page-box>
+    <search-slice (search)="onSearch($event)" (refresh)="onRefresh()" (cancel)="onCancel()"
+        [title]="'Invoices History'"></search-slice>
+    <div style="padding: 10px 0;">
+        <mat-divider></mat-divider>
+    </div>
+    <div class="row">
+        <div class="col-4 offset-8">
+            <single-date-selector (selected)="onFilterByDate($event)" (cancel)="cancelFilterByDate()"></single-date-selector>
+        </div>
+    </div>
+    <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
+    <invoices-list [invoices]="invoices"></invoices-list>
+    <br>
+    <mat-paginator [pageIndex]="page.page" [length]="count" [pageSize]="page.size" [pageSizeOptions]="[5, 10, 25, 100]"
+        (page)="onPageChanged($event)">
+    </mat-paginator>
+
+</page-box>

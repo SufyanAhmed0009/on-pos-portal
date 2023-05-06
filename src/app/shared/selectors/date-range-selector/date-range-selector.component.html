@@ -1,0 +1,25 @@
+<mat-form-field style="width: 40%;">
+    <input [max]="endDate" matInput autocomplete="off" [matDatepicker]="startPicker" [(ngModel)]="startDate"
+        placeholder="Start Date">
+    <mat-datepicker-toggle matSuffix [for]="startPicker">
+    </mat-datepicker-toggle>
+    <mat-datepicker #startPicker></mat-datepicker>
+</mat-form-field>
+
+&nbsp;
+
+<mat-form-field style="width: 40%;">
+    <input [min]="startDate" matInput autocomplete="off" [matDatepicker]="endPicker" [(ngModel)]="endDate"
+        placeholder="End Date">
+    <mat-datepicker-toggle matSuffix [for]="endPicker">
+    </mat-datepicker-toggle>
+    <mat-datepicker #endPicker></mat-datepicker>
+</mat-form-field>
+
+<button (click)="onFilter()" mat-icon-button>
+    <mat-icon>check</mat-icon>
+</button>
+
+<button (click)="onCancelFilter()" mat-icon-button>
+    <mat-icon>close</mat-icon>
+</button>

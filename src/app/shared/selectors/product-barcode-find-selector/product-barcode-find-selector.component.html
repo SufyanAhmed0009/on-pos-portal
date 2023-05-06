@@ -1,0 +1,9 @@
+<form [formGroup]="barcodeForm" (ngSubmit)="onSubmit()">
+    <mat-form-field style="width: 100%; ">
+        <span matPrefix>
+            <i class="fa fa-barcode"></i>
+            &nbsp;
+        </span>
+        <input matInput autocomplete="off" placeholder="Search Product By Barcode: " formControlName="barcode">
+    </mat-form-field>
+</form>

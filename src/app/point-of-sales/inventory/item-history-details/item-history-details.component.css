@@ -1,0 +1,45 @@
+.item-history-heading {
+    background-color: #3f51b5;
+    color: white;
+    padding: 10px;
+}
+.mat-column-id {
+    flex: 0 0 10% !important;
+    width: 10% !important;
+}  
+
+.mat-column-title {
+    flex: 0 0 20% !important;
+    width: 20% !important;
+} 
+
+.mat-column-quantity {
+    flex: 0 0 10% !important;
+    width: 10% !important;
+}
+
+.mat-column-cost{
+    flex: 0 0 12% !important;
+    width: 12% !important;
+}
+.mat-column-price{
+    flex: 0 0 12% !important;
+    width: 12% !important;
+}
+
+.mat-column-status {
+    flex: 0 0 10% !important;
+    width: 10% !important;
+}
+
+.mat-column-date {
+    flex: 0 0 11% !important;
+    width: 11% !important;
+}
+
+.mat-column-orderNumber {
+    flex: 0 0 10% !important;
+    width: 0 0 10% !important;
+}
+
+

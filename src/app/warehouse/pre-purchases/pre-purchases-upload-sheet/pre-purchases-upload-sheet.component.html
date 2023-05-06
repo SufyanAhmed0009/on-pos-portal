@@ -1,0 +1,77 @@
+<page-box>
+    <div class="row">
+        <div class="col-6">
+            <h3>
+                <strong>Pre Purchase Upload Sheet</strong>
+            </h3>
+        </div>
+        <div class="col-6" [align]="'end'">
+            <button matTooltip="View History" (click)="onHistory()" mat-mini-fab [color]="'default'">
+                <i class="fa fa-history"></i>
+            </button>
+        </div>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="upload-box" style="min-height: 100px;">
+        <div class="row">
+            <div class="col-3">
+                <mat-form-field style="width: 100%">
+                    <input matInput autocomplete="off" type="text" placeholder="Purchase Order Number" [(ngModel)]="purchaseOrderNo">
+                </mat-form-field>
+            </div>
+        </div>
+      
+        
+        <input type="file" [disabled]="uploading" id="file" (change)="onSelected($event)">
+        <label for="file" class="btn-2">upload</label>
+        <p>
+            Download sample file 
+            <a href="../../../../assets/pre-purchase-example.csv" download>here</a>.
+        </p>
+        <mat-progress-bar mode="indeterminate" *ngIf="uploading"></mat-progress-bar>
+    </div>
+    <mat-divider></mat-divider>
+    <br>
+
+    <h3 *ngIf="uploaded">
+        <strong>Review/Update Data</strong>
+    </h3>
+    <mat-table class="mat-elevation-z8" *ngIf="uploaded" [dataSource]="productsList">
+        
+        <ng-container matColumnDef="id">
+            <mat-header-cell *matHeaderCellDef>ID</mat-header-cell>
+            <mat-cell *matCellDef="let product;">
+                {{ product.libraryItemId }}
+            </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="title">
+            <mat-header-cell *matHeaderCellDef>Title</mat-header-cell>
+            <mat-cell *matCellDef="let product;">
+                {{ product.title }}
+            </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="quantity">
+            <mat-header-cell *matHeaderCellDef>Quantity</mat-header-cell>
+            <mat-cell *matCellDef="let product;">
+                <mat-form-field style="width: 90%;">
+                    <input matInput autocomplete="off" [(ngModel)]="product.quantity" type="number">
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="columnsList"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: columnsList;"></mat-row>
+
+    </mat-table>
+
+    <br>
+    <div *ngIf="uploaded" style="height: 50px;" [align]="'end'">
+        <button (click)="onSubmit()" *ngIf="!submitting" mat-raised-button [color]="'secondary'">
+            Submit
+        </button>
+        <mat-progress-bar mode="indeterminate" *ngIf="submitting"></mat-progress-bar>
+    </div>
+    
+</page-box>

@@ -1,0 +1,11 @@
+.invoice-heading {
+    background-color: #993399;
+    color: white;
+    padding: 10px;
+}
+
+.box {
+    padding: 10px;
+    margin: 0px;
+    background-color: #eef;
+}

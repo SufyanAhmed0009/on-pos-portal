@@ -1,0 +1,67 @@
+<h2 class="invoice-heading">
+    <div class="row">
+        <div class="col-6" style="padding-top: 8px;">Count</div>
+        <div [align]="'end'" class="col-6">
+            <button (click)="onClose()" mat-icon-button>
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+    </div>
+</h2>
+
+<data-loader *ngIf="loading"></data-loader>
+
+<div *ngIf="!loading">
+
+    <div class="row">
+        <div class="col-6">
+            <p>Count ID: <strong>{{ count.id | number:'3.' }}</strong></p>
+            <p>Count Date: <strong>{{ getDate(count.tsServer) | date:'medium' }}</strong></p>
+        </div>
+        <div class="col-6" [align]="'end'">
+            <button matTooltip="Download Data" (click)="onDownload()" mat-mini-fab [color]="'default'">
+                <i class="fa fa-download"></i>
+            </button>
+        </div>
+    </div>
+
+   
+
+
+    <mat-table [dataSource]="countItems"  class="mat-elevation-z8">
+
+        <ng-container matColumnDef="id">
+            <mat-header-cell *matHeaderCellDef>ID</mat-header-cell>
+            <mat-cell *matCellDef="let element;">
+                {{ element.id }}
+            </mat-cell>
+            <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+        </ng-container>
+    
+        <ng-container matColumnDef="title">
+            <mat-header-cell *matHeaderCellDef>Title</mat-header-cell>
+            <mat-cell *matCellDef="let element;">
+                {{ element.title }}
+            </mat-cell>
+            <mat-footer-cell *matFooterCellDef>
+                <strong>Total</strong>
+            </mat-footer-cell>
+        </ng-container>
+    
+        <ng-container matColumnDef="quantity">
+            <mat-header-cell *matHeaderCellDef>Quantity</mat-header-cell>
+            <mat-cell *matCellDef="let element;">
+                {{ element.quantity }}
+            </mat-cell>
+            <mat-footer-cell *matFooterCellDef>
+                <strong>{{ getTotalQuantity()}}</strong>
+            </mat-footer-cell>
+        </ng-container>
+    
+        <mat-header-row *matHeaderRowDef="columnsList;"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: columnsList;"></mat-row>
+        <mat-footer-row *matFooterRowDef="columnsList"></mat-footer-row>
+        
+    </mat-table>
+
+</div> 

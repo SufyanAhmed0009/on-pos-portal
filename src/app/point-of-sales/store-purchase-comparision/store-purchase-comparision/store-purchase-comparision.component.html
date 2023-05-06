@@ -1,0 +1,299 @@
+<page-box>
+    <div class="row">
+        <div class="col-md-3">
+            <h3><strong>Purchase Comparison</strong></h3>
+        </div>
+        <div class="col-md-2">
+            <h4>
+                Completion: {{ ApiResponse?.completion <= 0 ? '0' : ApiResponse?.completion | number: '.2' }}{{"%"}}
+                    </h4>
+        </div>
+        <div class="col-md-3">
+            <h4>
+                Total Items: {{ApiResponse?.count <= 0 ? '0' : ApiResponse?.count }} </h4>
+        </div>
+        <div class="col-md-4" [align]="'end'">
+        
+            <!-- MAT AUTO-COMPLETE FOR SELECTING PRE PURCHASE ORDER -->
+            <form class="example-form">
+                <mat-form-field style="width: 60%;" class="example-full-width">
+                    <input type="text" placeholder="Pre-Purchase Order" aria-label="Number" matInput
+                        [formControl]="POControl" [matAutocomplete]="auto">
+                    <mat-autocomplete (optionSelected)="onPOSelected($event.option.value)"
+                        #auto="matAutocomplete">
+                        <mat-option *ngFor="let option of filteredPONames | async" [value]="option">
+                            {{option}}
+                        </mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
+                <button matTooltip="Clear Selection" (click)="onPOCleared()" mat-icon-button>
+                    <mat-icon>close</mat-icon>
+                </button>
+                <button mat-mini-fab (click)="onDownload()" *ngIf="!isLoading" [color]="'primary'">
+                    <i class="fa fa-download"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+        <div class="row">
+            
+        </div>
+        
+   
+
+    <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+
+    <!-- Fully Matched -->
+    <mat-accordion>
+        <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+            <mat-expansion-panel-header class="right-aligned-header">
+                <mat-panel-title>
+                    <strong> Fully Matched</strong>
+                </mat-panel-title>
+                <mat-panel-description>
+                    <strong>Count: {{fullyMatched.length}} </strong>
+                </mat-panel-description>
+            </mat-expansion-panel-header>
+
+            <mat-table [dataSource]="fullyMatched" class="mat-elevation-z8">
+
+                <!-- ID Column -->
+                <ng-container matColumnDef="libraryItemId">
+                    <mat-header-cell *matHeaderCellDef>Item Id</mat-header-cell>
+                    <mat-cell *matCellDef="let element; let i = index;">
+                        {{ element.libraryItemId }}
+                    </mat-cell>
+                </ng-container>
+
+                <!-- Title Column -->
+                <ng-container matColumnDef="title">
+                    <mat-header-cell *matHeaderCellDef>Title</mat-header-cell>
+                    <mat-cell *matCellDef="let element; let i = index;">
+                        {{ element.title }}
+                    </mat-cell>
+                </ng-container>
+
+                <!-- Quantity Column -->
+                <ng-container matColumnDef="quantity">
+                    <mat-header-cell *matHeaderCellDef>Quantity</mat-header-cell>
+                    <mat-cell *matCellDef="let element; let i = index;">
+                        {{ element.quantity }}
+                    </mat-cell>
+                </ng-container>
+
+
+                <mat-header-row *matHeaderRowDef="columnsList"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: columnsList;"></mat-row>
+
+            </mat-table>
+
+            <!-- END OF MAT-TABLE -->
+        </mat-expansion-panel>
+    </mat-accordion>
+
+    <!-- Not Matched -->
+    <mat-accordion>
+        <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+            <mat-expansion-panel-header class="right-aligned-header">
+                <mat-panel-title>
+                    <strong> Not Matched</strong>
+                </mat-panel-title>
+                <mat-panel-description>
+                    <strong>Count: {{notMatched.length}} </strong>
+                </mat-panel-description>
+
+            </mat-expansion-panel-header>
+
+            <mat-table [dataSource]="notMatched" class="mat-elevation-z8">
+
+                <!-- ID Column -->
+                <ng-container matColumnDef="libraryItemId">
+                    <mat-header-cell *matHeaderCellDef>Item Id</mat-header-cell>
+                    <mat-cell *matCellDef="let element; let i = index;">
+                        {{ element.libraryItemId }}
+                    </mat-cell>
+                </ng-container>
+
+                <!-- Title Column -->
+                <ng-container matColumnDef="title">
+                    <mat-header-cell *matHeaderCellDef>Title</mat-header-cell>
+                    <mat-cell *matCellDef="let element; let i = index;">
+                        {{ element.title }}
+                    </mat-cell>
+                </ng-container>
+
+                <!-- Quantity Column -->
+                <ng-container matColumnDef="quantity">
+                    <mat-header-cell *matHeaderCellDef>Quantity</mat-header-cell>
+                    <mat-cell *matCellDef="let element; let i = index;">
+                        {{ element.quantity }}
+                    </mat-cell>
+                </ng-container>
+
+                <!-- Quantity Difference Column -->
+                <ng-container matColumnDef="quantityDifference">
+                    <mat-header-cell *matHeaderCellDef>Quantity Difference</mat-header-cell>
+                    <mat-cell *matCellDef="let element; let i = index;">
+                        <span
+                            [ngStyle]="{ 'color': ( element.quantityDifference < 0 ? 'red' : 'green'), 'font-weight': 'bold'}">
+                            {{ element.quantityDifference < 0 ? element.quantityDifference * -1 :
+                                element.quantityDifference }} </span>
+                    </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="notMatchedColumnsList"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: notMatchedColumnsList;"></mat-row>
+
+            </mat-table>
+
+            <!-- END OF MAT-TABLE -->
+        </mat-expansion-panel>
+    </mat-accordion>
+
+    <!-- Not Purchased -->
+    <mat-accordion>
+        <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+            <mat-expansion-panel-header class="right-aligned-header">
+                <mat-panel-title>
+                    <strong> Not Purchased</strong>
+                </mat-panel-title>
+                <mat-panel-description>
+                    <strong>Count: {{notPurchased.length}} </strong>
+                </mat-panel-description>
+
+            </mat-expansion-panel-header>
+
+            <mat-table [dataSource]="notPurchased" class="mat-elevation-z8">
+
+                <!-- ID Column -->
+                <ng-container matColumnDef="libraryItemId">
+                    <mat-header-cell *matHeaderCellDef>Item Id</mat-header-cell>
+                    <mat-cell *matCellDef="let element; let i = index;">
+                        {{ element.libraryItemId }}
+                    </mat-cell>
+                </ng-container>
+
+                <!-- Title Column -->
+                <ng-container matColumnDef="title">
+                    <mat-header-cell *matHeaderCellDef>Title</mat-header-cell>
+                    <mat-cell *matCellDef="let element; let i = index;">
+                        {{ element.title }}
+                    </mat-cell>
+                </ng-container>
+
+                <!-- Quantity Column -->
+                <ng-container matColumnDef="quantity">
+                    <mat-header-cell *matHeaderCellDef>Quantity</mat-header-cell>
+                    <mat-cell *matCellDef="let element; let i = index;">
+                        {{ element.quantity }}
+                    </mat-cell>
+                </ng-container>
+
+
+                <mat-header-row *matHeaderRowDef="columnsList"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: columnsList;"></mat-row>
+
+            </mat-table>
+
+            <!-- END OF MAT-TABLE -->
+        </mat-expansion-panel>
+    </mat-accordion>
+
+    <!-- Purchased Additionally -->
+    <mat-accordion>
+        <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+            <mat-expansion-panel-header class="right-aligned-header">
+                <mat-panel-title>
+                    <strong> Purchased Additionally </strong>
+                </mat-panel-title>
+                <mat-panel-description>
+                    <strong>Count: {{purchasedAdditionally.length}} </strong>
+                </mat-panel-description>
+
+            </mat-expansion-panel-header>
+
+            <mat-table [dataSource]="purchasedAdditionally" class="mat-elevation-z8">
+
+                <!-- ID Column -->
+                <ng-container matColumnDef="libraryItemId">
+                    <mat-header-cell *matHeaderCellDef>Item Id</mat-header-cell>
+                    <mat-cell *matCellDef="let element; let i = index;">
+                        {{ element.libraryItemId }}
+                    </mat-cell>
+                </ng-container>
+
+                <!-- Title Column -->
+                <ng-container matColumnDef="title">
+                    <mat-header-cell *matHeaderCellDef>Title</mat-header-cell>
+                    <mat-cell *matCellDef="let element; let i = index;">
+                        {{ element.title }}
+                    </mat-cell>
+                </ng-container>
+
+                <!-- Quantity Column -->
+                <ng-container matColumnDef="quantity">
+                    <mat-header-cell *matHeaderCellDef>Quantity</mat-header-cell>
+                    <mat-cell *matCellDef="let element; let i = index;">
+                        {{ element.quantity }}
+                    </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="columnsList"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: columnsList;"></mat-row>
+
+            </mat-table>
+
+            <!-- END OF MAT-TABLE -->
+        </mat-expansion-panel>
+    </mat-accordion>
+
+    <!-- Null Quantity -->
+    <mat-accordion *ngIf="nullQuantity.length>0">
+        <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+            <mat-expansion-panel-header class="right-aligned-header">
+                <mat-panel-title>
+                    <strong> Null Quantity </strong>
+                </mat-panel-title>
+                <mat-panel-description>
+                    <strong>Count: {{nullQuantity.length}} </strong>
+                </mat-panel-description>
+
+            </mat-expansion-panel-header>
+
+            <mat-table [dataSource]="nullQuantity" class="mat-elevation-z8">
+
+                <!-- ID Column -->
+                <ng-container matColumnDef="libraryItemId">
+                    <mat-header-cell *matHeaderCellDef>Item Id</mat-header-cell>
+                    <mat-cell *matCellDef="let element; let i = index;">
+                        {{ element.libraryItemId }}
+                    </mat-cell>
+                </ng-container>
+
+                <!-- Title Column -->
+                <ng-container matColumnDef="title">
+                    <mat-header-cell *matHeaderCellDef>Title</mat-header-cell>
+                    <mat-cell *matCellDef="let element; let i = index;">
+                        {{ element.title }}
+                    </mat-cell>
+                </ng-container>
+
+                <!-- Quantity Column -->
+                <ng-container matColumnDef="quantity">
+                    <mat-header-cell *matHeaderCellDef>Quantity</mat-header-cell>
+                    <mat-cell *matCellDef="let element; let i = index;">
+                        {{ element.quantity }}
+                    </mat-cell>
+                </ng-container>
+
+
+
+                <mat-header-row *matHeaderRowDef="columnsList"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: columnsList;"></mat-row>
+
+            </mat-table>
+
+            <!-- END OF MAT-TABLE -->
+        </mat-expansion-panel>
+    </mat-accordion>
+</page-box>

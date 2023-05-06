@@ -1,0 +1,25 @@
+<div class="outer-box" [dir]="langDir">
+    <div class="container" [ngStyle]="{ 'padding-top' : (isHandset$ | async)?'10px':'50px' }">
+        <div class="row"> 
+            <div class="col-md-3"></div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-10" class="login-box">
+                        <img src="../../../assets/octoberlogo.png" class="smarty-logo">
+                        <!-- <mat-card style="border: none; box-shadow: none; width: 100%;">
+                            <div class="form-box">
+                                <div class="full-width"> 
+                                    <img src="../../../assets/octoberlogo.png" class="smarty-logo">
+                                </div>  
+                                
+                                <ng-content></ng-content>
+                            </div>
+                        </mat-card> -->
+                        <ng-content></ng-content>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

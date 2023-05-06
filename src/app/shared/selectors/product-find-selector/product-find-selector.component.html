@@ -1,0 +1,13 @@
+<mat-form-field style="width: 100%; ">
+    <span matPrefix>
+        <i class="fa fa-search"></i>
+        &nbsp;
+    </span>
+    <input matInput placeholder="Search Product By Name: " aria-label="Product" [matAutocomplete]="auto"
+        [formControl]="inputControl">
+    <mat-autocomplete (optionSelected)='onProductSelected($event.option.value)' #auto="matAutocomplete">
+        <mat-option *ngFor="let product of products" [value]="product.title">
+            <span>{{ product.title }}</span>
+        </mat-option>
+    </mat-autocomplete>
+</mat-form-field>

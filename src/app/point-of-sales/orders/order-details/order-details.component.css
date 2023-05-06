@@ -1,0 +1,62 @@
+.invoice-heading {
+    background-color: #3f51b5;
+    color: white;
+    padding: 10px;
+}
+
+.box {
+    padding: 10px;
+    margin: 0px;
+    background-color: #eef;
+}
+
+
+.mat-column-id {
+    flex: 0 0 15% !important;
+    width: 15% !important;
+}
+
+.mat-column-title {
+    flex: 0 0 30% !important;
+    width: 30% !important;
+}
+
+.mat-column-netPrice {
+    flex: 0 0 10% !important;
+    width: 10% !important;
+}
+
+.mat-column-actualPrice {
+    flex: 0 0 10% !important;
+    width: 10% !important;
+}
+
+.mat-column-quantity {
+    justify-content: center;
+}
+
+
+.mat-column-store {
+    flex: 0 0 15% !important;
+    width: 15% !important;
+}
+
+.status {
+    display: block;
+    padding: 20px;
+    margin: 10px;
+    text-align: center;
+    border-radius: 50px;
+    background-color: white;
+    font-weight: bold;
+}
+
+.maroon {
+    color: maroon;
+}
+.green {
+    color: green;
+}
+.gray {
+    color: gray;
+}

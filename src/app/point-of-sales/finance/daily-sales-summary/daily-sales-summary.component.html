@@ -1,0 +1,118 @@
+<page-box>
+    <div class="row">
+        <div class="col-6">
+            <br>
+            <h2>
+                <i class="fa fa-bar-chart" aria-hidden="true"></i> Daily Sales Summary
+            </h2>
+        </div>
+        <div class="col-6" [align]="'end'">
+            <mat-form-field style="width: 50%; font-size: large;">
+                <input [max]="parentDate" matInput autocomplete="off" [matDatepicker]="startPicker"
+                    [(ngModel)]="currentDate" placeholder="Date" (dateChange)="onParentDateChange($event)">
+                <mat-datepicker-toggle matSuffix [for]="startPicker">
+                </mat-datepicker-toggle>
+                <mat-datepicker #startPicker></mat-datepicker>
+            </mat-form-field>
+        </div>
+    </div>
+    <mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
+    <div class="container" *ngIf="!loading">
+        <div id="contentInside" *ngFor="let store of storesDailySales">
+            <div>
+                <h2><i class="fa fa-shopping-bag" aria-hidden="true"></i> <strong> {{ store.branchTitle}}</strong></h2>
+                <hr>
+                <mat-form-field style="width: 90%;">
+                    <input [max]="parentDate" matInput autocomplete="off" [matDatepicker]="datePicker" [ngModel]="store.childDate"
+                        placeholder="Date" (dateChange)="OnChildDateChange($event,store)">
+                    <mat-datepicker-toggle matSuffix [for]="datePicker">
+                    </mat-datepicker-toggle>
+                    <mat-datepicker #datePicker></mat-datepicker>
+                </mat-form-field>
+
+                <div class="row" [align]="'center'">
+                    <div class="col-6">
+                        <!-- <i class="fa fa-money" aria-hidden="true"></i> -->
+                        <strong> {{store.sales | number:'.0'}} </strong>
+                        <br>
+                        <small>Sales </small>
+                    </div>
+                    <div class="col-6">
+
+                        <strong> {{store.profit | number:'.0' }} </strong>
+                        <br>
+                        <small>Profit </small>
+                        <!-- <i class="fa fa-money fa-4x" aria-hidden="true"></i> -->
+
+                    </div>
+                </div>
+
+                <hr>
+                <div class="row">
+                    <span class="col-8 label">
+                        <small>Inventory Capital: </small>
+                    </span>
+                    <span class="col-4 price">
+                        <strong> {{store.inventoryCapital | number:'.0'}}</strong>
+                    </span>
+                </div>
+
+                <hr>
+                <div class="row">
+                    <span class="col-8 label">
+                        <small>Beginning Inventory:</small>
+                    </span>
+                    <span class="col-4 price">
+                        <strong> {{ store.beginningInventory | number:'.0'}}</strong>
+                    </span>
+                </div>
+
+                <div class="row">
+                    <span class="col-8 label">
+                        <small>Ending Inventory:</small>
+                    </span>
+                    <span class="col-4 price">
+                        <strong> {{ store.closingInventory | number:'.0'}}</strong>
+                    </span>
+                </div>
+
+                <div class="row" (click)="openDos(store)">
+                    <span class="col-8 label">
+                        <i class="fa fa-bar-chart" aria-hidden="true"></i>
+                        <small> Purchasing: </small>
+                        
+                    </span>
+                    <span class="col-4 price">
+                        <strong> {{store.purchasing | number:'.0'}}</strong>
+                    </span>
+                </div>
+
+                <div class="row">
+                    <span class="col-8 label">
+                        <small>Corrections: </small>
+                    </span>
+                    <span class="col-4 price">
+                        <strong> {{store.corrections | number:'.0'}}</strong>
+                    </span>
+                </div>
+
+                <div class="row">
+                    <span class="col-8 label">
+                        <small>Payable: </small>
+                        <!-- <small>Payable/Receivable By ON: </small> -->
+                    </span>
+                    <span class="col-4 price">
+                        <strong> {{store.payable | number:'.0'}}</strong>
+                    </span>
+                </div>
+                <hr>
+                <div  [align]="'center'">
+                    <button (click)="onDetail(store.correctionList)" [disabled]="store.correctionList.length==0" mat-raised-button [color]="'primary'">Corrections Detail</button>
+                  </div>
+                <!-- <div class="column" style="text-align: left"  *ngFor="let comment of store.commentList;let i = index">
+                    <div>{{ i+1+". " + comment}}</div>
+                </div> -->
+            </div>
+        </div>
+    </div>
+</page-box>

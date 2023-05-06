@@ -1,0 +1,142 @@
+<page-box>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="row">
+                <div class="col-6">
+                    <h3 style="padding-top: 10px; font-weight: bold;">Add Warehouse Purchase:</h3>
+                </div>
+                <div class="col-6" [align]="'end'">
+                    <button matTooltip="Upload Sheet" [routerLink]="['/warehouse/purchases/upload-sheet']" mat-mini-fab
+                        [color]="'default'">
+                        <i class="fa fa-upload"></i>
+                    </button>
+                    &nbsp;
+                    <button matTooltip="View History" (click)="onHistory()" mat-mini-fab [color]="'default'">
+                        <i class="fa fa-history"></i>
+                    </button>
+                </div>
+            </div>
+            <br>
+            <product-barcode-find-selector (selected)="onAddProduct($event)"></product-barcode-find-selector>
+            <span *ngIf="showTitle">
+                <product-find-selector (selected)="onAddProduct($event)" [warehouseId]="selectedWarehouse">
+                </product-find-selector>
+            </span>
+        </div>
+        <div class="col-md-8">
+            <div class="row">
+                <div class="col-md-3 offset-3">
+                    <mat-form-field style="width: 100%;">
+                        <mat-select [(ngModel)]="selectedPOId" placeholder="Pre-Purchase Order">
+                            <mat-option [value]="element.id" *ngFor="let element of PurchaseOrderList">
+                                {{ element.title }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="col-md-3">
+                    <mat-form-field style="width: 100%;">
+                        <input matInput autocomplete="off" [(ngModel)]="purchaseOrderNo"
+                            placeholder="Purchase order Number" type="text">
+                    </mat-form-field>
+                </div>
+                <div class="col-md-3">
+                    <mat-form-field style="width: 100%;">
+                        <mat-select [(ngModel)]="selectedSupplier" placeholder="Vendor">
+                            <mat-option [value]="supplier.id" *ngFor="let supplier of suppliersList">
+                                {{ supplier.title }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+            <p style="color: red;"> * Difference between cost and retail price is less or greater than 20%</p>
+            <wh-selected-products [products]="purchaseProducts"></wh-selected-products>
+            <br>
+
+         <div >
+            <h3> <strong> <i class="fa fa-paperclip" aria-hidden="true"></i> File Attachments </strong>  </h3>
+         </div>
+            <mat-table [dataSource]="attachFiles" class="mat-elevation-z8">
+
+                <!-- Name Column -->
+                <ng-container matColumnDef="name">
+                    <mat-header-cell *matHeaderCellDef >Name </mat-header-cell>
+                    <mat-cell *matCellDef="let element; let i = index;">
+                        {{ element.name}}
+                    </mat-cell>
+                </ng-container>
+
+                <!-- Size Column -->
+                <ng-container matColumnDef="size">
+                    <mat-header-cell *matHeaderCellDef >Size </mat-header-cell>
+                    <mat-cell *matCellDef="let element; let i = index;">
+                        {{ (element.size/1000) | number : '.2'}} Kb
+                    </mat-cell>
+                </ng-container>
+
+                <!-- Actions Column -->
+                <ng-container matColumnDef="actions">
+                    <mat-header-cell *matHeaderCellDef >Action </mat-header-cell>
+                    <mat-cell *matCellDef="let element; let i = index;">
+                        <button (click)="onRemoveFile(i)" matTooltip="Remove Item" mat-mini-fab [color]="'warn'">
+                            <i class="fa fa-times"></i>
+                        </button>
+                    </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="columnsList"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: columnsList;"></mat-row>
+
+            </mat-table>
+            <br>
+
+            <!-- <form [formGroup]="uploadForm">
+
+                FILE UPLOAD
+                <input multiple style="display: none;" type="file" (change)="onFileSelected($event)" #fileInput>
+                <button class="btn2" (click)="fileInput.click()" mat-mini-fab>
+                    <span class="material-icons">
+                        attachment
+                        attach_file
+                    </span>
+                </button>
+
+               
+            </form> -->
+            <!-- <p ng-repeat="file in files">
+                {{file.name}}
+              </p> -->
+
+            <div style="height: 50px;" [align]="'end'">
+                <!-- <button *ngIf="!submitting" [disabled]="getTotalCost() == 0 || !selectedSupplier || !selectedPOId || !purchaseOrderNo"
+                    (click)="onAddPurchase()" mat-raised-button [color]="'primary'">Submit</button> -->
+
+                <form [formGroup]="uploadForm">
+
+                    <!-- FILE UPLOAD -->
+                    <input multiple="multiple" style="display: none;" type="file" (change)="onFileSelected($event)"
+                        #fileInput>
+                    <button class="btn2" (click)="fileInput.click()" mat-mini-fab>
+                        <span class="material-icons">
+                            <!-- attachment -->
+                            attach_file
+                        </span>
+                    </button>
+
+                    &nbsp;
+
+                    <button *ngIf="!submitting" [disabled]="!selectedSupplier || !selectedPOId || !purchaseOrderNo"
+                        (click)="onAddPurchase()" mat-raised-button [color]="'primary'">Submit</button>
+                    <mat-progress-bar *ngIf="submitting" mode="indeterminate"></mat-progress-bar>
+                </form>
+
+                <!-- <button *ngIf="!submitting" [disabled]="!selectedSupplier || !selectedPOId || !purchaseOrderNo"
+                (click)="onAddPurchase()" mat-raised-button [color]="'primary'">Submit</button>
+                <mat-progress-bar *ngIf="submitting" mode="indeterminate"></mat-progress-bar> -->
+
+            </div>
+            <br>
+        </div>
+    </div>
+</page-box>

@@ -1,0 +1,10 @@
+.load-box {
+    font-size: small;
+    color: white;
+    padding: 5px;
+}
+
+.status-box {
+    display: inline-block;
+    width: 33%;
+}

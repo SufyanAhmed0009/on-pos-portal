@@ -1,0 +1,149 @@
+<mat-card style="border-radius: 0px; box-shadow: 1px 1px 5px #ccc;">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="row">
+                <div class="col-6">
+                    <h3>
+                        Generate Invoice:
+                    </h3>
+                </div>
+                <div *ngIf="!loading" class="col-6" style="padding-top: 10px;" [align]="'end'">
+                    <button matTooltip="History" [color]="'default'" mat-mini-fab (click)="onViewHistory()">
+                        <i class="fa fa-history"></i>
+                    </button>
+                    &nbsp;
+                    <button matTooltip="Refresh Products Data" [color]="'primary'" mat-mini-fab (click)="onRefresh()">
+                        <i class="fa fa-refresh"></i>
+                    </button>
+                    &nbsp;
+                    <button matTooltip="Sync Invoices to the Server" matBadge="{{ pendingInvoices }}" matBadgeColor="warn" [matBadgeHidden]="pendingInvoices == 0"
+                        [disabled]="pendingInvoices == 0" mat-mini-fab [color]="'primary'" (click)="onSyncInvoices()">
+                        <i class="fa fa-upload"></i>
+                    </button>
+                </div>
+
+                <div *ngIf="loading" class="col-6" style="padding-top: 10px;" [align]="'end'">
+                    <div class="row">
+                        <div class="col-6"></div>
+                        <div class="col-6">
+                            <mat-spinner diameter='35'></mat-spinner>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <product-by-barcode-selector (selected)="onProductSelected($event)"></product-by-barcode-selector>
+            <product-by-name-selector (selected)="onProductSelected($event)"></product-by-name-selector>
+
+            <br>
+
+            <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        <strong>Additional Info</strong>
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <div class="row">
+                    <div class="col-md-3">Bill Number:</div>
+                    <div class="col-md-5 blue-color">{{ extraInfo.billNumber }}</div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">Bill Date:</div>
+                    <div class="col-md-5 blue-color">{{ extraInfo.date | date:'dd-MM-yy' }}</div>
+                </div>
+
+                <mat-form-field style="width: 100%;">
+                    <input autocomplete="off" type="number" [(ngModel)]="extraInfo.referenceNo" matInput
+                        placeholder="Reference Number:">
+                </mat-form-field>
+                <mat-form-field style="width: 100%;">
+                    <input autocomplete="off" type="number" [(ngModel)]="extraInfo.remarks" matInput placeholder="Remarks:">
+                </mat-form-field>
+            </mat-expansion-panel>
+
+            <br>
+            <div [align]="'end'">
+                <button [disabled]="invoiceProducts.length == 0" (click)="onGenerate()" mat-raised-button
+                    [color]="'primary'">Generate</button>
+            </div>
+            <br>
+        </div>
+        <div class="col-md-8">
+
+            <mat-table [dataSource]="invoiceProducts" class="mat-elevation-z8">
+                
+                <ng-container matColumnDef="delete">
+                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                    <mat-cell *matCellDef="let element; let i = index;">
+                        <button (click)="removeItem(i)" mat-mini-fab class="small-fab" [color]="'warn'">
+                            <i class="fa fa-times"></i>
+                        </button>
+                    </mat-cell>
+                    <mat-footer-cell *matFooterCellDef mat-footer-cell>
+                    </mat-footer-cell>
+                </ng-container>
+                
+                <ng-container matColumnDef="name">
+                    <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+                    <mat-cell *matCellDef="let element; let i = index;">
+                        {{element.name}}
+                    </mat-cell>
+                    <mat-footer-cell *matFooterCellDef mat-footer-cell>
+                        Total
+                    </mat-footer-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="quantity">
+                    <mat-header-cell *matHeaderCellDef class="center">
+                        Quantity
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element;" class="center">
+                        <button (click)="decreaseQuantity(element)" mat-mini-fab class="small-fab"
+                            [color]="'default'">-</button>
+                        &nbsp;
+                        &nbsp;
+                        <strong>{{element.quantity}}</strong>
+                        &nbsp;
+                        &nbsp;
+                        <button (click)="increaseQuantity(element)" mat-mini-fab class="small-fab"
+                            [color]="'default'">+</button>
+                        &nbsp;
+                        <button (click)="increaseQuantityByFive(element)" mat-mini-fab class="small-fab"
+                            [color]="'default'">+5</button>
+                    </mat-cell>
+                    <mat-footer-cell class="center" *matFooterCellDef mat-footer-cell></mat-footer-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="maxQuantity">
+                    <mat-header-cell *matHeaderCellDef class="center">
+                        Max Quantity
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element;" class="center">
+                        {{ element.maxQuantity }}
+                    </mat-cell>
+                    <mat-footer-cell class="center" *matFooterCellDef mat-footer-cell> </mat-footer-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="price">
+                    <mat-header-cell *matHeaderCellDef class="center"> Price </mat-header-cell>
+                    <mat-cell *matCellDef="let element;" class="center"> {{element.price}} </mat-cell>
+                    <mat-footer-cell mat-footer-cell *matFooterCellDef class="center"> </mat-footer-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="netAmount">
+                    <mat-header-cell *matHeaderCellDef class="center"> Net Amount </mat-header-cell>
+                    <mat-cell *matCellDef="let element;" class="center"> {{element.netAmount}} </mat-cell>
+                    <mat-footer-cell mat-footer-cell *matFooterCellDef class="center">
+                        <strong>Rs. {{ invoiceHighlights.netAmount | number:".0" }}</strong>
+                    </mat-footer-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="columnsList"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: columnsList;"></mat-row>
+                <mat-footer-row *matFooterRowDef="columnsList"></mat-footer-row>
+            </mat-table>
+
+        </div>
+    </div>
+</mat-card>

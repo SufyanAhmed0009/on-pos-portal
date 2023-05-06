@@ -1,0 +1,107 @@
+.mat-column-title {
+    flex: 0 0 13% !important;
+    width: 13% !important;
+    cursor: pointer;
+}
+
+.mat-column-id {
+    flex: 0 0 10% !important;
+    width: 10% !important;
+}
+
+.mat-column-type {
+    flex: 0 0 7% !important;
+    width: 7% !important;
+    cursor: pointer;
+}
+
+.mat-column-verified {
+    justify-content: center;
+}
+
+.mat-column-strategy {
+    flex: 0 0 7% !important;
+    width: 7% !important;
+    cursor: pointer;
+}
+
+.mat-column-status {
+    flex: 0 0 7% !important;
+    width: 7% !important;
+    /* padding: 5px !important; */
+    cursor: pointer;
+}
+
+.mat-column-select {
+    flex: 0 0 5% !important;
+    width: 5% !important; 
+} 
+
+.mat-column-editItemConversion {
+    flex: 0 0 5% !important;
+    width: 5% !important;
+}
+
+.mat-column-edit {
+    flex: 0 0 5% !important;
+    width: 5% !important;
+    padding: 10px !important;
+}
+
+.mat-column-cost,
+.mat-column-price,
+.mat-column-quantity,
+.mat-column-minQuantity,
+.mat-column-maxQuantity,
+.mat-column-discount,
+.mat-column-netSalePrice,
+.mat-column-editItemConversion {
+    justify-content: center;
+}
+
+.mat-column-quantityPerItem,
+.mat-column-quantityPerOrder{
+    padding: 10px !important;
+    justify-content: center;
+}
+
+.mat-column-netSalePrice {
+    flex: 0 0 7% !important;
+    width: 7% !important; 
+}
+
+.mat-column-barcode {
+    flex: 0 0 8% !important;
+    width: 8% !important; 
+} 
+
+.mat-column-status {
+    flex: 0 0 5% !important;
+    width: 5% !important; 
+} 
+
+input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.width-90 {
+    width: 90%;
+}
+
+.mat-icon-button {
+    background-color: #eef;
+}
+
+.mat-icon-button:hover {
+    background-color: #ddf;
+}
+
+.mat-row:hover {
+    background-color: #0002;
+    cursor: pointer;
+}
+
+.active {
+    background-color: #ccf;
+}

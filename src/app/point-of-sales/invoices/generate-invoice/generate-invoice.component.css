@@ -1,0 +1,56 @@
+input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.blue-color {
+    color: blue;
+    font-weight: bold;
+}
+
+.mat-column-name {
+    flex: 0 0 30% !important;
+    width: 30% !important;
+}
+
+.mat-column-quantity {
+    flex: 0 0 30% !important;
+    width: 30% !important;
+}
+
+.small-fab {
+    width: 30px;
+    height: 30px;
+    line-height: 14px;
+    font-size: 14px;
+}
+
+.small-fab::ng-deep .mat-button-wrapper {
+    line-height: 14px;
+    padding: 0;
+}
+
+.small-fab::ng-deep .mat-button-wrapper .mat-icon {
+    font-size: 14px;
+    padding-right: 4px;
+    padding-top: 4px;
+}
+
+mat-header-cell.center {
+    display: flex;
+    justify-content: center;
+}
+
+mat-cell.center {
+    display: flex;
+    justify-content: center;
+}
+
+mat-footer-cell.center {
+    display: flex;
+    justify-content: center;
+}
+
+table {
+    width: 100%;
+}

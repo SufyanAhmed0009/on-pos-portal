@@ -1,0 +1,38 @@
+.mat-column-id {
+    flex: 0 0 10% !important;
+    width: 10% !important;
+}
+
+.mat-column-total {
+    flex: 0 0 20% !important;
+    width: 20% !important;
+} 
+
+.mat-column-approved {
+    flex: 0 0 10% !important;
+    width: 10% !important;
+    justify-content: center;
+} 
+
+.mat-column-fileAttachments {
+    flex: 0 0 8% !important;
+    width: 8% !important;
+    justify-content: center;
+} 
+
+.mat-column-purchaseOrderNo {
+    justify-content: center;
+}
+
+.mat-column-supplierTitle {
+    justify-content: center;
+}
+
+.mat-row:hover {
+    background-color: #ccf;
+    cursor: pointer;
+}
+
+.btn2{
+    background-color: #993399;
+}

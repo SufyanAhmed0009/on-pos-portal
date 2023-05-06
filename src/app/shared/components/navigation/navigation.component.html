@@ -1,0 +1,149 @@
+<mat-sidenav-container class="sidenav-container">
+    <mat-sidenav [ngClass]="{ 'hidden' : !(isHandset$ | async) }" #drawer class="sidenav" fixedInViewport
+        [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'" [mode]="(isHandset$ | async) ? 'over' : 'side'"
+        [opened]="(isHandset$ | async) === false">
+
+        <!-- <mat-toolbar>Menu</mat-toolbar> -->
+        <mat-nav-list>
+            <!-- DYNAMIC NAVBAR FOR HANDSETS STARTS HERE -->
+            <mat-accordion>
+                <div *ngFor="let menu of menus">
+                    <mat-expansion-panel *ngIf="menu.subMenus.length > 0" class="sideNavBarMobile">
+
+                        <mat-expansion-panel-header>
+                            <span class="{{menu.imageClass}}"></span> &nbsp;
+                            {{ menu.name }}
+                        </mat-expansion-panel-header>
+                        <!-- list goes here -->
+                        <mat-list role="list">
+                            <mat-list-item (click)="onRoute(li.link)" *ngFor="let li of menu.subMenus" role="listitem">
+                                {{ li.name }}
+                            </mat-list-item>
+                        </mat-list>
+
+                    </mat-expansion-panel>
+                    <mat-expansion-panel (click)="onRoute(menu.link)" [hideToggle]="true"
+                        *ngIf="menu.subMenus.length == 0" class="sideNavBarMobile">
+                        <mat-expansion-panel-header>
+                            <span class="{{menu.imageClass}}"></span> &nbsp;
+                            {{ menu.name }}
+                        </mat-expansion-panel-header>
+                    </mat-expansion-panel>
+                </div>
+            </mat-accordion>
+
+            <div [align]="'center'" style="padding: 20px;">
+                <button [matMenuTriggerFor]="userPanel" [color]="'default'" mat-mini-fab>
+                    <i class="fa fa-user"></i>
+                </button> &nbsp;
+            </div>
+            <!-- DYNAMIC NAVBAR FOR HANDSETS ENDS HERE -->
+        </mat-nav-list>
+
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <mat-toolbar>
+            <mat-toolbar-row [ngStyle]="{ 'background-color': colors.TITLE_BAR, 'color': 'white' }">
+                <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()"
+                    *ngIf="isHandset$ | async">
+                    <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+                </button>
+                <!-- <span *ngIf="(isHandset$ | async)" class="spacer"></span> -->
+                <button *ngIf="!(isHandset$ | async)" [matMenuTriggerFor]="userPanel"
+                    [ngStyle]="{ 'background-color': colors.TITLE_BAR }" mat-mini-fab>
+                    <i class="fa fa-user"></i>
+                </button> &nbsp;
+
+                <mat-menu #userPanel="matMenu">
+                    <ng-template matMenuContent>
+                        <div style="padding: 5px; text-align: center;">
+                            <button mat-fab>{{ currentUser.charAt(0).toUpperCase() }}</button>
+                            <hr>
+                            {{ currentUser }}
+                        </div>
+                    </ng-template>
+                </mat-menu>
+
+                <span [ngStyle]="{'font-size':(isHandset$ | async)?'small':'large'}">{{ panelTitle }}</span>
+                &nbsp;
+                <span style="font-size: x-small;">{{ getVersion() }}</span>
+                <div class="debug-mode" *ngIf="testMode" [ngStyle]="{ color: colors.TITLE_BAR }">TEST MODE</div>
+                <span class="spacer"></span>
+
+                <div>
+                    <!-- <mat-form-field *ngIf="userTypeIds.includes(2) && userTypeIds.includes(19)"
+                        style="width: 150px; font-size: small;">
+                        <mat-select (selectionChange)="onUserTypeChange()" [(ngModel)]="currentUserTypeId">
+                            <mat-option *ngFor="let element of userTypeList" [value]="element.id">
+                                {{ element.title }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    &nbsp;
+
+                    <mat-form-field *ngIf="warehouses && currentUserTypeId == 19" style="width: 150px; font-size: small;">
+                        <mat-select (selectionChange)="onWarehouseChange()" [(ngModel)]="currentWhId">
+                            <mat-option *ngFor="let warehouse of warehouses" [value]="warehouse.id">
+                                {{ warehouse.title }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field> -->
+
+                    <mat-form-field *ngIf="stores && currentUserTypeId != 19" style="width: 150px; font-size: small;">
+                        <mat-select (selectionChange)="onStoreChange()" [(ngModel)]="currentStoreId">
+                            <mat-option *ngFor="let store of stores" [value]="store.id">
+                                {{ store.title }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div>
+
+                    <span *ngIf="!(isHandset$ | async)">
+                        <i class="{{ currentLanguage.flagClass }}"></i>&nbsp;
+                    </span>
+                    <mat-form-field *ngIf="languages" style="width: 70px; font-size: small;">
+                        <mat-select (selectionChange)="onLanguageChange()" [(ngModel)]="currentLanguageTitle">
+                            <mat-option *ngFor="let language of languages" [value]="language.name">
+                                <i class="{{language.flagClass}}"></i>&nbsp;{{ language.name }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    &nbsp;
+                    <button [color]="'warn'" mat-mini-fab (click)="onLogout()">
+                        <i class="fa fa-sign-out"></i>
+                    </button>
+                    <!-- <button [color]="'primary'" (click)="changeLanguage()" mat-button>
+                    </button> -->
+                </div>
+            </mat-toolbar-row>
+            <mat-toolbar-row [ngStyle]="{ 'background-color': colors.MENU_BAR, 'color': 'black' }" id="stickyheader"
+                *ngIf="!(isHandset$ | async)">
+                <!-- DYNAMIC NAVBAR STARTS HERE -->
+                <mat-menu #appMenu="matMenu">
+                    <ng-template matMenuContent>
+                        <button (click)="onRoute(submenu.link)" mat-menu-item *ngFor="let submenu of submenus">{{
+                            submenu.name }}</button>
+                    </ng-template>
+                </mat-menu>
+
+                <span *ngFor="let m of menus">
+                    <button *ngIf="m.subMenus.length > 0" (click)="setSubmenu(m.subMenus)" mat-button
+                        [matMenuTriggerFor]="appMenu">
+                        <span class="{{m.imageClass}}"></span>&nbsp;{{ m.name }}
+                    </button>
+                    <button mat-button (click)="onRoute(m.link)" *ngIf="m.subMenus.length == 0">
+                        <span class="{{m.imageClass}}"></span>&nbsp;{{ m.name }}
+                    </button>
+                </span>
+                <!-- DYNAMIC NAVBAR ENDS HERE -->
+            </mat-toolbar-row>
+        </mat-toolbar>
+        
+        <!-- Add Content Here -->
+        <div style="padding: 20px;">
+            <ng-content></ng-content>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

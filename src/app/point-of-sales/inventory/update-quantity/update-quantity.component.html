@@ -1,0 +1,25 @@
+<h2 class="invoice-heading">
+    <div class="row">
+        <div class="col-6" style="padding-top: 8px;">Update Quantity</div>
+        <div [align]="'end'" class="col-6">
+            <button (click)="onClose()" mat-icon-button>
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+    </div>
+</h2>
+
+<form (ngSubmit)="onSubmit()" [formGroup]="updateForm">
+    <mat-form-field class="full-width">
+        <input placeholder="Enter Quantity: " formControlName="quantity" autocomplete="off" matInput type="number">
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+        <textarea matInput placeholder="Comments: " formControlName="comments" rows="2"></textarea>
+    </mat-form-field>
+
+    <div style="height: 50px;" [align]="'end'">
+        <mat-progress-bar mode="indeterminate" *ngIf="submitting"></mat-progress-bar>
+        <button mat-raised-button [disabled]="!updateForm.valid" [color]="'primary'" *ngIf="!submitting">Submit</button>
+    </div>
+</form>

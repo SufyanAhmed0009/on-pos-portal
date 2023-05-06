@@ -1,0 +1,81 @@
+<div class="container">
+    <mat-card class="card-box">
+        <div class="innerbox">
+
+            <div class="flex">
+                <h3><strong> Bikers Report </strong></h3>
+                <div class="spacer"></div>
+
+                <button mat-mini-fab (click)="onDownload()" *ngIf="!loading" [color]="'primary'">
+                    <i class="fa fa-download"></i>
+                </button>
+                &nbsp;&nbsp;&nbsp;
+                <button *ngIf="!loading" mat-mini-fab (click)="onRefresh()" [color]="'primary'">
+                    <i class="fa fa-refresh"></i>
+                </button>
+
+
+                <mat-spinner [diameter]="35" *ngIf="loading"></mat-spinner>
+            </div>
+            <div class = "row">
+                <div class = "col-3">
+                    <mat-form-field style="width: 100%;">
+                        <mat-label>Choose a date</mat-label>
+                        <input matInput [matDatepicker]="picker" [max]="maxDate" (dateChange)="dateFilter($event)"
+                            [formControl]="currentDate">
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <mat-divider></mat-divider>
+            <br>
+
+            <div *ngIf="riderSalesList?.length == 0">
+                No Data Available!
+            </div>
+
+            <mat-table *ngIf="riderSalesList?.length > 0" [dataSource]=" riderSalesList" class="mat-elevation-z8">
+
+                <!-- Rider ID Column -->
+                <ng-container matColumnDef="id">
+                    <mat-header-cell *matHeaderCellDef>Biker Id</mat-header-cell>
+                    <mat-cell *matCellDef="let element;">
+                        {{ element.riderId ? element.riderId : 'NA' }}
+                    </mat-cell>
+                </ng-container>
+
+                <!-- Rider Name Column -->
+                <ng-container matColumnDef="riderName">
+                    <mat-header-cell *matHeaderCellDef>Biker Name</mat-header-cell>
+                    <mat-cell *matCellDef="let element;">
+                        {{ element.riderName ? element.riderName : 'NA' }}
+                    </mat-cell>
+                </ng-container>
+
+                <!-- Total Order Column -->
+                <ng-container matColumnDef="totalOrders">
+                    <mat-header-cell *matHeaderCellDef>Total Orders</mat-header-cell>
+                    <mat-cell *matCellDef="let element;">
+                        {{ element.totalOrders }}
+                    </mat-cell>
+                </ng-container>
+
+                <!-- Total Amount Column -->
+                <ng-container matColumnDef="totalAmount">
+                    <mat-header-cell *matHeaderCellDef>Total Amount</mat-header-cell>
+                    <mat-cell *matCellDef="let element;">
+                        Rs. {{ element. totalSales | number:'.2' }}
+                    </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="columnsList;"></mat-header-row>
+                <mat-row (click)=" onSelectBiker(row)" *matRowDef="let row; columns: columnsList;">
+                </mat-row>
+
+            </mat-table>
+            <!-- END OF MAT-TABLE -->
+        </div>
+    </mat-card>
+</div>

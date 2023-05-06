@@ -1,0 +1,15 @@
+<page-box>
+
+    <search-slice (search)="onSearch($event)" (refresh)="onRefresh()" (cancel)="onCancel()" [title]="'Transfer Products'">
+        <button (click)="onTransfer()" matTooltip="Transfer Products" mat-icon-button><mat-icon>check</mat-icon></button>
+    </search-slice>
+
+    <mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
+    <transfer-products-list [products]="products"></transfer-products-list>
+
+    <br>
+    <mat-paginator [pageIndex]="page.page" [length]="count" [pageSize]="page.size" [pageSizeOptions]="[5, 10, 25, 100]"
+        (page)="onPageChanged($event)">
+    </mat-paginator>
+
+</page-box>

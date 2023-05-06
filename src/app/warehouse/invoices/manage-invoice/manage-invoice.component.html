@@ -1,0 +1,50 @@
+<page-box>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="row">
+                <div class="col-6">
+                    <h3 style="padding-top: 10px; font-weight: bold;">Add Warehouse Invoice:</h3>
+                </div>
+                <div class="col-6" [align]="'end'">
+                    <button matTooltip="View History" (click)="onHistory()" mat-mini-fab [color]="'default'">
+                        <i class="fa fa-history"></i>
+                    </button>
+                </div>
+            </div>
+            <br>
+            <product-barcode-find-selector (selected)="onAddProduct($event)" [warehouseId]="selectedWarehouse"></product-barcode-find-selector>
+            <span *ngIf="showTitle">  
+                <product-find-selector (selected)="onAddProduct($event)" [warehouseId]="selectedWarehouse">
+                </product-find-selector>
+            </span>
+        </div>
+        <div class="col-md-8">
+            <div class="row">
+                <div class="col-md-3 offset-6">
+                    <mat-form-field style="width: 100%;">
+                        <input matInput autocomplete="off" [(ngModel)]="invoiceNo"
+                            placeholder="Invoice Number" type="text">
+                    </mat-form-field>
+                </div>
+                <div class="col-md-3">
+                    <mat-form-field style="width: 100%;">
+                        <mat-select [(ngModel)]="selectedCustomer" placeholder="Customer">
+                            <mat-option [value]="customer.id" *ngFor="let customer of customerList">
+                                {{ customer.title }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+            <p style="color: red;"> * Difference between cost and retail price is less or greater than 20%</p>
+            <wh-invoice-selected-products [products]="invoiceProducts"></wh-invoice-selected-products>
+            <br>
+            <div style="height: 50px;" [align]="'end'">
+                <button *ngIf="!submitting" [disabled]="getTotalCost() == 0 || !selectedCustomer || !invoiceNo"
+                    (click)="onAddInvoice()" mat-raised-button [color]="'primary'">Submit</button>
+                <mat-progress-bar *ngIf="submitting" mode="indeterminate"></mat-progress-bar>
+            </div>
+            <br>
+        </div>
+    </div>
+</page-box>

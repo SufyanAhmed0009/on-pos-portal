@@ -1,0 +1,227 @@
+<h2 class="invoice-heading">
+    <div class="row">
+        <div class="col-6" style="padding-top: 4px;">
+            Update Inventory
+        </div>
+        <div [align]="'end'" class="col-6">
+            <button (click)="onClose()" mat-icon-button>
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+    </div>
+</h2>
+
+<br>
+
+<div class="row">
+    <div class="col-md-3 offset-6">
+        <mat-form-field style="width: 100%;">
+            <input matInput autocomplete="off" [(ngModel)]="invoiceRequest.purchaseOrderNo"
+                placeholder="Purchase order Number" type="text">
+        </mat-form-field>
+    </div>
+    <div class="col-md-3">
+        <mat-form-field style="width: 100%;">
+            <mat-label>Supplier: </mat-label>
+            <mat-select [(ngModel)]="invoiceRequest.supplier.id">
+                <mat-option [value]="supplier.id" *ngFor="let supplier of suppliersList">
+                    {{ supplier.title }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4" style="padding-top: 15px;">
+        Add New Product:
+    </div>
+    <div class="col-md-4">
+        <span *ngIf="showTitle">
+            <product-find-selector (selected)="onAddProduct($event)"></product-find-selector>
+        </span>
+    </div>
+
+    <div class="col-md-4">
+        <product-barcode-find-selector (selected)="onAddProduct($event)"></product-barcode-find-selector>
+    </div>
+</div>
+
+
+<mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
+
+<p style="color: red;"> * Difference between cost and price is less or greater than 20%</p>
+
+<mat-table *ngIf="!loading" class="mat-elevation-z8" [dataSource]="invoiceRequest.products">
+
+    <ng-container matColumnDef="id">
+        <mat-header-cell *matHeaderCellDef>ID</mat-header-cell>
+        <mat-cell *matCellDef="let product;">
+            {{ product.libraryItemId }} /<br> {{ product.id }}
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="title">
+        <mat-header-cell *matHeaderCellDef>Title</mat-header-cell>
+        <mat-cell *matCellDef="let product;">
+            <span
+            [ngStyle]="{ 'color':  ((priceCheck(product).highPrice == true  || priceCheck(product).lowPrice ==  true ) ? 'red' : 'black'), 'font-weight': 'bold'}">
+            {{(priceCheck(product).highPrice == true  || priceCheck(product).lowPrice ==  true) ? '*' : ''}}
+            {{product.title}}
+          </span>
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="cost">
+        <mat-header-cell *matHeaderCellDef>Cost</mat-header-cell>
+        <mat-cell *matCellDef="let product;">
+            <mat-form-field style="width: 90%;">
+                <input matInput autocomplete="off" [(ngModel)]="product.cost" type="number">
+            </mat-form-field>
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="quantity">
+        <mat-header-cell *matHeaderCellDef>Quantity</mat-header-cell>
+        <mat-cell *matCellDef="let product;">
+            <mat-form-field style="width: 90%;">
+                <input matInput autocomplete="off" [(ngModel)]="product.quantity" type="number">
+            </mat-form-field>
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="strategy">
+        <mat-header-cell *matHeaderCellDef>
+            <mat-form-field style="width: 90%;">
+                <mat-label>Pricing Strategy</mat-label>
+                <mat-select (selectionChange)="onSelectPricingStrategy($event)">
+                    <mat-option [value]="strategy.id" *ngFor="let strategy of pricingStrategyList">
+                        {{ strategy.description }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </mat-header-cell>
+        <mat-cell *matCellDef="let product;">
+            <mat-form-field style="width: 90%;">
+                <mat-select [(ngModel)]="product.pricingStrategy">
+                    <mat-option [value]="strategy.id" *ngFor="let strategy of pricingStrategyList">
+                        {{ strategy.description }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="price">
+        <mat-header-cell *matHeaderCellDef>Price</mat-header-cell>
+        <mat-cell *matCellDef="let product;">
+            <mat-form-field style="width: 90%;">
+                <input [disabled]="product.pricingStrategy != 8" matInput autocomplete="off" [(ngModel)]="product.price"
+                    type="number" (keyup)="priceCheck(product)">
+            </mat-form-field>
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="retailPrice">
+        <mat-header-cell *matHeaderCellDef>Retail Price</mat-header-cell>
+        <mat-cell *matCellDef="let product;">
+            {{ product.retailPrice | number : '1.2-2' }}
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="delete">
+        <mat-header-cell *matHeaderCellDef>Delete</mat-header-cell>
+        <mat-cell *matCellDef="let product;">
+            <button matTooltip="Toggle Delete" (click)="toggleDelete(product)" mat-mini-fab [color]="'warn'">
+                <mat-icon>delete</mat-icon>
+            </button>
+        </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="columnsList"></mat-header-row>
+    <mat-row [ngStyle]="{ backgroundColor: row.state == 'D' ? '#fcc' : 'white' }"
+        *matRowDef="let row; columns: columnsList;"></mat-row>
+
+</mat-table>
+
+<br>
+
+<div >
+    <h3> <strong> <i class="fa fa-paperclip" aria-hidden="true"></i> File Attachments </strong>  </h3>
+ </div>
+ <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+ <mat-table *ngIf="!isLoading" [dataSource]="fileList" class="mat-elevation-z8">
+
+     <!-- id Column -->
+     <ng-container matColumnDef="id">
+         <mat-header-cell *matHeaderCellDef>ID </mat-header-cell>
+         <mat-cell *matCellDef="let element; let i = index;">
+             {{ element.documentUpload.id}}
+         </mat-cell>
+
+     </ng-container>
+
+     <!-- fileName Column -->
+     <ng-container matColumnDef="fileName">
+         <mat-header-cell *matHeaderCellDef>File Name </mat-header-cell>
+         <mat-cell *matCellDef="let element; let i = index;">
+             {{ element.documentUpload.fileName }}
+         </mat-cell>
+
+     </ng-container>
+
+     <!-- Actions Column -->
+     <ng-container matColumnDef="actions">
+         <mat-header-cell *matHeaderCellDef>
+             Actions
+         </mat-header-cell>
+         <mat-cell *matCellDef="let element; let i = index;">
+
+             <button (click)="onFileDownload(element)" matTooltip="Download" mat-mini-fab [color]="'default'">
+                 <i class="fa fa-download"></i>
+             </button>
+             &nbsp;&nbsp;
+             <button (click)="onFileDelete(element)" matTooltip="Delete" mat-mini-fab [color]="'default'">
+                 <span style="color: red;">
+                     <mat-icon>delete</mat-icon>
+                 </span>
+             </button>
+         </mat-cell>
+     </ng-container>
+
+     <mat-header-row *matHeaderRowDef="fileColumnsList"></mat-header-row>
+     <mat-row *matRowDef="let row; columns: fileColumnsList;"></mat-row>
+
+
+ </mat-table>
+
+ <mat-progress-bar *ngIf="isDownloading" mode="indeterminate"></mat-progress-bar>
+    <br>
+ 
+
+<div class="flex" style="height: 50px;">
+    <div class="spacer"></div>
+    <mat-spinner *ngIf="submitting" [diameter]="35"></mat-spinner>
+    <div *ngIf="!submitting">
+        <form [formGroup]="uploadForm">
+
+            <!-- FILE UPLOAD -->
+            <input multiple="multiple" style="display: none;" type="file" (change)="onFileSelected($event)"
+                #fileInput>
+            <button class="btn2" (click)="fileInput.click()" mat-mini-fab>
+                <span class="material-icons">
+                    attach_file
+                </span>
+            </button>
+            &nbsp;
+        
+            <!-- <mat-progress-bar *ngIf="submitting" mode="indeterminate"></mat-progress-bar> -->
+            <button mat-raised-button (click)="onCancel()" [color]="'Warn'">Cancel</button>
+            &nbsp;
+            <button mat-raised-button (click)="onUpdate(false)" [color]="'primary'">Update</button>
+            &nbsp;
+            <button [disabled]="isApproved" mat-raised-button (click)="onUpdate(true)" [color]="'accent'">Approve</button>
+        </form>
+    </div>
+</div>
+

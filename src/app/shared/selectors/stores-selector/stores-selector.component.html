@@ -1,0 +1,19 @@
+<mat-form-field class="width-eighty">
+
+    <span matPrefix>
+        <i class="fa fa-map-marker"></i> &nbsp;
+    </span>
+    <input matInput placeholder="Store: " aria-label="State" [matAutocomplete]="auto" [formControl]="inputControl">
+    
+    <mat-autocomplete (optionSelected)="optionSelected($event)" #auto="matAutocomplete">
+        <mat-option *ngFor="let store of stores" [value]="store.title">
+            {{ store.title }}
+            <small>{{ store.details }}</small>
+        </mat-option>
+    </mat-autocomplete>
+
+</mat-form-field>
+
+<button (click)="clearSelection()" mat-icon-button>
+    <mat-icon>close</mat-icon>
+</button>

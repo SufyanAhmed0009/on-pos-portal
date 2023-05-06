@@ -1,0 +1,38 @@
+.invoice-heading {
+    background-color: rgb(76, 93, 122);;
+    color: white;
+    padding: 10px;
+}
+
+.box {
+    padding: 10px;
+    margin: 0px;
+    background-color: #eef;
+}
+
+.mat-column-id {
+    flex: 0 0 10% !important;
+    width: 10% !important;
+}
+
+.mat-column-title {
+    flex: 0 0 30% !important;
+    width: 30% !important;
+}
+
+.mat-column-strategy {
+    flex: 0 0 25% !important;
+    width: 25% !important;
+}
+
+.mat-column-quantity {
+    justify-content: center;
+}
+
+.mat-column-cost {
+    justify-content: center;
+}
+
+.mat-column-quantityReceived {
+    justify-content: center;
+}

@@ -1,0 +1,95 @@
+<auth-box [langDir]="this.langDir">
+
+    <!-- <mat-form-field style="width: 100%;">
+        <mat-select [(ngModel)]="selectedPortalType" placeholder="Portal Type">
+            <mat-option [value]="element.id" *ngFor="let element of portalTypeList">
+                {{ element.title }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field> -->
+
+    <form [formGroup]="loginForm" (ngSubmit)="login()" class="login-form">
+
+        <mat-form-field style="width: 100%;">
+            <span matPrefix>
+                <i class="fa fa-user"></i>
+                &nbsp;
+            </span>
+            <input formControlName="username" autocomplete="off" matInput placeholder="Username: ">
+        </mat-form-field>
+
+        <mat-form-field style="width: 100%;">
+            <span matPrefix>
+                <i class="fa fa-key"></i>
+                &nbsp;
+            </span>
+            <input formControlName="password" autocomplete="off" type="password" matInput
+                placeholder="
+                {{ 'Password'  }}">
+        </mat-form-field>
+
+        <mat-form-field style="width: 100%;">
+            <span matPrefix>
+                <i class="fa fa-check" ></i>
+                &nbsp;
+            </span>
+            <mat-select formControlName="portalType" placeholder="Portal Type">
+                <mat-option [value]="element.id" *ngFor="let element of portalTypeList">
+                    {{ element.title }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <div class="row">
+            <div class="col-6">
+                <mat-checkbox class="example-margin">
+                    Remember Me
+                </mat-checkbox>
+            </div>
+            <div class="col-6" [align]="'end'">
+                <!-- <a [routerLink]="['/forgot']" class="anchor-link">
+                    Forgot Password?
+                </a> -->
+            </div>
+        </div>
+
+        <div [align]="'end'" style="height: 40px;">
+
+            <div *ngIf="submitted">
+                <br>
+                <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+            </div>
+
+            <div class="row">
+                <div class="col-md-9"></div>
+                <div class="col-md-3">
+                    <button type="submit" *ngIf="!submitted" [disabled]="!loginForm.valid" mat-fab [color]="'primary'">
+                        <i class="fa fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div style="height: 50px;">
+        <div *ngIf="error" class="error-box">
+            {{ error }}
+        </div>
+    </div>
+    <hr>
+
+    <p [align]="'center'">
+        <span style="font-size: x-small;">
+            © 2019 BenchMatrix Corporation Canada. All rights reserved.
+        </span>
+        <br><br>
+        <strong>Version {{ getVersion() }}</strong>
+    </p>
+
+    <div [align]="'center'" style="height: 50px;">
+        <button *ngFor="let language of languages" mat-button (click)="onChangeLanguage(language)">
+            <i class="{{language.flagClass}}"></i> &nbsp; {{language.name}}
+        </button>
+    </div>
+
+</auth-box>

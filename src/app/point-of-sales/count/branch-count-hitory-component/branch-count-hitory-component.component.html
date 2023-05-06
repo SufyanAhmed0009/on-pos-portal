@@ -1,0 +1,70 @@
+<page-box>
+    <div class="row">
+        <div class="col-7">
+            <h3>
+                <button [routerLink]="['/pos/inventory/count']" mat-mini-fab [color]="'default'">
+                    <i class="fa fa-arrow-left"></i>
+                </button>
+                &nbsp;
+                <strong>Count History</strong>
+            </h3>
+        </div>
+        <div class="col-4">
+            <single-date-selector (selected)="onFilterByDate($event)" (cancel)="cancelFilterByDate()">
+            </single-date-selector>
+        </div>
+        <div class="col-1" style="padding: 5px;">
+            <button (click)="onRefresh()" mat-icon-button>
+                <mat-icon>refresh</mat-icon>
+            </button>
+        </div>
+    </div>
+
+    <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
+
+    <mat-table [dataSource]="counts" class="mat-elevation-z8">
+
+        <ng-container matColumnDef="id">
+            <mat-header-cell *matHeaderCellDef>ID</mat-header-cell>
+            <mat-cell *matCellDef="let element;">
+                {{ element.id }}
+            </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="date">
+            <mat-header-cell *matHeaderCellDef>Date</mat-header-cell>
+            <mat-cell *matCellDef="let element;">
+                {{ getDate(element.tsServer) | date:'medium' }}
+            </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="countNumber">
+            <mat-header-cell *matHeaderCellDef>Count No</mat-header-cell>
+            <mat-cell *matCellDef="let element;">
+                {{ element.countNumber }}
+            </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="approved">
+            <mat-header-cell *matHeaderCellDef>Opened / Closed</mat-header-cell>
+            <mat-cell *matCellDef="let element;" (click)="$event.stopPropagation()">
+                <mat-slide-toggle
+                    [(ngModel)]="element.isOpen"
+                    [color]="'primary'"
+                    (change)="stateChanged(element.id, $event)">
+                </mat-slide-toggle>
+            </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="columnsList"></mat-header-row>
+        <mat-row (click)="onSelectCount(row)" *matRowDef="let row; columns: columnsList;"></mat-row>
+
+    </mat-table>
+
+
+    <br>
+    <mat-paginator [pageIndex]="page.page" [length]="count" [pageSize]="page.size" [pageSizeOptions]="[5, 10, 25, 100]"
+        (page)="onPageChanged($event)">
+    </mat-paginator>
+
+</page-box>

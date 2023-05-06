@@ -1,0 +1,96 @@
+<page-box>
+
+    <div class="title-bar">
+        <h3 style="font-weight: bold; padding-top: 10px; font-size: large;">
+            {{ currentStore.title }}
+        </h3>
+        <div class="spacer"></div>
+        <mat-form-field>
+            <input matInput (dateInput)="onChange()" autocomplete="off" [matDatepicker]="datePicker" [(ngModel)]="inputDate"
+                placeholder="Select Date">
+            <mat-datepicker-toggle matSuffix [for]="datePicker">
+            </mat-datepicker-toggle>
+            <mat-datepicker  (selectedValueChange)="onChange()" #datePicker></mat-datepicker>
+        </mat-form-field>
+    </div>
+
+    <mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
+    <mat-divider></mat-divider>
+
+    <div *ngIf="financeData">
+
+        <div class="data-list">
+            <div class="data-item">
+                <p class="gray">GMV (Month)</p>
+                <strong>{{ financeData.gmvMonth | strtonum | number:'.2' }}</strong>
+            </div>
+            <div class="data-item">
+                <p class="gray">GMV (Week)</p>
+                <strong>{{ financeData.gmvWeek | strtonum | number:'.2' }}</strong>
+            </div>
+            <div class="data-item">
+                <p class="gray">GMV (Day)</p>
+                <strong>{{ financeData.gmvDay | strtonum | number:'.2' }}</strong>
+            </div>
+            <div class="data-item">
+                <p class="gray">Net Profit</p>
+                <strong>{{ financeData.profitMonth| strtonum | number:'.2' }}</strong>
+            </div>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div style="padding: 10px 0; color: gray; font-size: large; text-align: center; font-weight: bold;">
+            Today's Summary
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="data-list">
+            <div class="data-item">
+                <p class="gray">Total Orders</p>
+                <strong>{{ financeData.countTotalOrdersDay | strtonum | number:'.0' }}</strong>
+            </div>
+            <div class="data-item">
+                <p class="gray">In Queue</p>
+                <strong>{{ financeData.countInQueueNew | strtonum | number:'.0' }}</strong>
+            </div>
+            <div class="data-item">
+                <p class="gray">Ready</p>
+                <strong>{{ financeData.countReady | strtonum | number:'.0' }}</strong>
+            </div>
+            <div class="data-item">
+                <p class="gray">Dispatched</p>
+                <strong>{{ financeData.countDispatch | strtonum | number:'.0' }}</strong>
+            </div>
+            <div class="data-item">
+                <p class="gray">Delivered</p>
+                <strong>{{ financeData.countDelivered| strtonum | number:'.0' }}</strong>
+            </div>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="data-list">
+            <div class="data-item">
+                <p class="gray">Total Items Sold</p>
+                <strong>{{ financeData.itemSoldToday | strtonum | number:'.0' }}</strong>
+            </div>
+            <div class="data-item">
+                <p class="gray">Available Inventory</p>
+                <strong>{{ financeData.avgInvCount | strtonum | number:'.0' }}</strong>
+                (PKR {{ financeData.avgInvCost | strtonum | number:'.2' }})
+            </div>
+            <div class="data-item">
+                <p class="gray">Cost of Goods Sold</p>
+                <strong>{{ financeData.cosg | strtonum | number:'.0' }}</strong>
+                
+            </div>
+            <div class="data-item">
+                <p class="gray">Net Profit</p>
+                <strong>{{ financeData.netProfit | strtonum | number:'.2' }}</strong>
+            </div>
+        </div>
+    </div>
+
+</page-box>

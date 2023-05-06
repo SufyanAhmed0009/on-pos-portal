@@ -1,0 +1,12 @@
+.mat-column-libraryItemId {
+    flex: 0 0 15% !important;
+    width: 15% !important;
+}
+.mat-column-quantity {
+    flex: 0 0 15% !important;
+    width: 15% !important;
+}
+.mat-column-quantityDifference {
+    flex: 0 0 15% !important;
+    width: 15% !important;
+}

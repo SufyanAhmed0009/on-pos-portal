@@ -1,0 +1,14 @@
+.payment-box {
+    display: block;
+    padding: 10px;
+    margin: 5px;
+    background-color: #eee;
+}
+
+.invoice-box {
+    font-size: small; 
+    padding: 20px; 
+    margin: 10px; 
+    background-color: #eee; 
+    font-family: Roboto Mono;
+}

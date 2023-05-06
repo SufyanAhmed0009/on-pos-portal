@@ -1,0 +1,72 @@
+<h2 class="biker-detail-heading">
+    <div class="row">
+        <div class="col-6" style="padding-top: 8px;">Biker Order Details</div>
+        <div [align]="'end'" class="col-6">
+            <button (click)="onClose()" mat-icon-button>
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+    </div>
+</h2>
+
+<div *ngIf="riderReportList?.length == 0">
+    No Data Available!
+</div>
+
+<mat-table *ngIf="riderReportList?.length > 0" [dataSource]=" riderReportList" class="mat-elevation-z8">
+
+    <!-- Rider ID Column -->
+    <ng-container matColumnDef="id">
+        <mat-header-cell *matHeaderCellDef>Biker Id</mat-header-cell>
+        <mat-cell *matCellDef="let element;">
+            {{ element.riderId ? element.riderId : 'NA' }}
+        </mat-cell>
+    </ng-container>
+
+    <!-- Rider Name Column -->
+    <ng-container matColumnDef="riderName">
+        <mat-header-cell *matHeaderCellDef>Biker Name</mat-header-cell>
+        <mat-cell *matCellDef="let element;">
+            {{ element.riderName ? element.riderName : 'NA' }}
+        </mat-cell>
+    </ng-container>
+
+    <!-- Order ID Column -->
+    <ng-container matColumnDef="orderId">
+        <mat-header-cell *matHeaderCellDef>Order Id</mat-header-cell>
+        <mat-cell *matCellDef="let element;">
+            {{ element.orderId }}
+        </mat-cell>
+    </ng-container>
+
+    <!-- Order Amount Column -->
+    <ng-container matColumnDef="orderAmount">
+        <mat-header-cell *matHeaderCellDef>Order Amount</mat-header-cell>
+        <mat-cell *matCellDef="let element;">
+            Rs. {{ element.orderAmount | number:'.2' }}
+        </mat-cell>
+    </ng-container>
+
+    <!-- Status Column -->
+    <ng-container matColumnDef="status">
+        <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+        <mat-cell *matCellDef="let element;">
+            {{ element.status }}
+        </mat-cell>
+    </ng-container>
+
+    <!-- Date Column -->
+    <ng-container matColumnDef="date">
+        <mat-header-cell *matHeaderCellDef>Date</mat-header-cell>
+        <mat-cell *matCellDef="let order;">
+            {{ order.tsUpd | date:'dd/MM/yyyy' }}
+        </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="columnsList;"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: columnsList;">
+
+    </mat-row>
+
+</mat-table>
+<!-- END OF MAT-TABLE -->

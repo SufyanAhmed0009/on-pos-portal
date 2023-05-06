@@ -1,0 +1,121 @@
+<h2 class="invoice-heading">
+    <div class="row">
+        <div class="col-10" style="padding-top: 4px;">Update Product</div>
+        <div [align]="'end'" class="col-2">
+            <button (click)="onClose()" mat-icon-button>
+                <mat-icon>close</mat-icon>
+            </button>
+        </div> 
+    </div>
+</h2>
+
+<h3>{{ product.title }}</h3>
+<mat-divider></mat-divider>
+<br>
+
+<form [formGroup]="updateForm" (ngSubmit)="onSubmit()">
+
+    <div class="row">
+        <div class="col-6">
+            <mat-form-field style="width: 100%;">
+                <input autocomplete="off" formControlName="cost" matInput placeholder="Cost" type="number">
+            </mat-form-field>
+        </div>
+        <div class="col-6">
+          
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-6">
+            <mat-form-field style="width: 100%">
+                <mat-label>Strategy</mat-label>
+                <mat-select formControlName="strategy">
+                    <mat-option *ngFor="let type of strategyTypes" [value]="type.id">
+                        {{ type.description }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="col-6">
+            <mat-form-field style="width: 100%;">
+                <input formControlName="price" autocomplete="off" matInput placeholder="Price" type="number">
+            </mat-form-field>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-6">
+            <mat-form-field style="width: 100%">
+                <input autocomplete="off" formControlName="discountAmount" matInput placeholder="Discount Amount:" type="number">
+            </mat-form-field>
+        </div>
+        <div class="col-6">
+            <small>Net Sale Price</small><br>
+            <strong>
+                {{ getNetSalePrice() }}
+            </strong>
+        </div>
+    </div>
+
+    <div class = "row">
+        <div class ="col-6">
+            <mat-form-field style="width: 100%;">
+                <input autocomplete="off" formControlName="quantity" matInput placeholder="Add Quantity" type="number">
+            </mat-form-field>
+        </div>
+        <div class = "col-6">
+            <mat-form-field style="width: 100%">
+                <mat-label>Reason</mat-label>
+                <mat-select formControlName="amendReason">
+                    <mat-option *ngFor="let element of reasonTypeList" [value]="element.id">
+                        {{ element.title }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-6">
+            <!--  minQuantity Field -->
+            <mat-form-field style="width: 100%;">
+                <input autocomplete="off" matInput placeholder="Threshold 1" formControlName="minQuantity" type="number"
+                    min="0" >
+            </mat-form-field>
+        </div>
+        <div class="col-6">
+             <!--  maxQuantity Field -->
+             <mat-form-field style="width: 100%;">
+                <input autocomplete="off" matInput placeholder="Threshold 2" formControlName="maxQuantity" type="number"
+                    min="0" >
+            </mat-form-field>
+        </div>
+    </div>
+
+    <mat-form-field style="width: 100%">
+        <textarea placeholder="comments" formControlName="comments" matInput rows="2">
+        </textarea>
+    </mat-form-field>
+
+    <mat-form-field style="width: 100%">
+        <mat-label>Status:</mat-label>
+        <mat-select formControlName="statusId">
+            <mat-option *ngFor="let status of statusList" [value]="status.id">
+                {{ status.title }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-checkbox formControlName="verified" [color]="'primary'">Verified</mat-checkbox>
+
+    <mat-form-field style="width: 100%;">
+        <input formControlName="password" autocomplete="off" matInput placeholder="Password" type="password">
+    </mat-form-field>
+
+    <div [align]="'end'" style="height: 50px;">
+        <button [disabled]="!updateForm.valid" *ngIf="!updating" mat-raised-button [color]="'primary'">Update</button>
+        <mat-progress-bar *ngIf="updating" mode="indeterminate"></mat-progress-bar>
+    </div>
+
+</form>

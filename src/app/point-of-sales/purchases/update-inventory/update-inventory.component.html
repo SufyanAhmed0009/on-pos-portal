@@ -1,0 +1,224 @@
+<h2 class="invoice-heading">
+  <div class="row">
+    <div class="col-6" style="padding-top: 4px;">
+      Update Inventory
+    </div>
+    <div [align]="'end'" class="col-6">
+      <button (click)="onClose()" mat-icon-button>
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </div>
+</h2>
+
+<mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
+
+<div class="row">
+  <div class="col-md-3 offset-6">
+    <mat-form-field style="width: 100%;">
+      <input matInput autocomplete="off" [(ngModel)]="invoiceRequest.deliveryOrderNo"
+        placeholder="Delivery order Number" type="text">
+    </mat-form-field>
+  </div>
+  <div class="col-md-3">
+    <mat-form-field style="width: 100%;">
+      <mat-label>Warehouse:</mat-label>
+      <mat-select [(ngModel)]="invoiceRequest.whId" placeholder="Warehouse">
+        <mat-option *ngFor="let warehouse of whList" [value]="warehouse.id">
+          {{ warehouse.title }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-4" style="padding-top: 15px;">
+    Add New Product:
+  </div>
+  <div class="col-md-4">
+    <span *ngIf="showTitle">
+      <product-find-selector (selected)="onAddProduct($event)"></product-find-selector>
+    </span>
+
+  </div>
+
+  <div class="col-md-4">
+    <product-barcode-find-selector (selected)="onAddProduct($event)" [warehouseId]="invoiceRequest.whId" ></product-barcode-find-selector>
+  </div>
+</div>
+
+<p style="color: red;"> * Difference between cost and price is less or greater than 20%</p>
+
+<mat-table *ngIf="!loading" class="mat-elevation-z8" [dataSource]="invoiceRequest.products">
+
+  <ng-container matColumnDef="id" class="make-gold">
+    <mat-header-cell *matHeaderCellDef>ID</mat-header-cell>
+    <mat-cell *matCellDef="let product;">
+      {{ product.libraryItemId }} /<br> {{ product.id }}
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="title">
+    <mat-header-cell *matHeaderCellDef>Title</mat-header-cell>
+    <mat-cell *matCellDef="let product;">
+      <span
+        [ngStyle]="{ 'color':  ((priceCheck(product).highPrice == true  || priceCheck(product).lowPrice ==  true ) ? 'red' : 'black'), 'font-weight': 'bold'}">
+        {{(priceCheck(product).highPrice == true || priceCheck(product).lowPrice == true) ? '*' : ''}}
+        {{product.title}}
+      </span>
+    </mat-cell>
+
+  </ng-container>
+
+  <ng-container  matColumnDef="status">
+    <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+    <mat-cell *matCellDef="let product;">
+      <mat-form-field style="width: 100%;" >
+        <mat-label>Status </mat-label>
+        <mat-select [(ngModel)]="product.statusId" [disabled] = "true">
+            <mat-option *ngFor="let status of statusList;" [value]="status.id">
+                {{ status.title }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    </mat-cell>
+  </ng-container>
+
+
+  <ng-container  matColumnDef="reason">
+    <mat-header-cell *matHeaderCellDef>Reason</mat-header-cell>
+    <mat-cell *matCellDef="let product;">
+      <mat-form-field style="width: 100%;" >
+        <mat-label>{{product.reasonId ? 'Reason' : 'No Reason'}} </mat-label>
+        <mat-select [(ngModel)]="product.reasonId" [disabled] = "true">
+            <mat-option *ngFor="let element of disputeReasonList;" [value]="element.id">
+                {{ element.name }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    </mat-cell>
+  </ng-container>
+
+
+  <ng-container matColumnDef="comment">
+    <mat-header-cell *matHeaderCellDef>Comment</mat-header-cell>
+    <mat-cell *matCellDef="let product;">
+    <span *ngIf="!product.comment"> 
+      -
+    </span>
+      <button style="color: blue;" (click)="showComment(product)" *ngIf="product.comment"
+      [color]="'default'" mat-mini-fab>
+      <i class="fa fa-comment"></i>
+  </button>
+    </mat-cell>
+  </ng-container>
+  
+  <ng-container matColumnDef="whCost">
+    <mat-header-cell *matHeaderCellDef>Warehouse Cost</mat-header-cell>
+    <mat-cell *matCellDef="let product;">
+      {{ product.whCost }}
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="weightedCost">
+    <mat-header-cell *matHeaderCellDef>Weighted Cost</mat-header-cell>
+    <mat-cell *matCellDef="let product;">
+      {{ getWeightedCost(product) | number : '1.2-2' }}
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="cost">
+    <mat-header-cell *matHeaderCellDef>Cost</mat-header-cell>
+    <mat-cell *matCellDef="let product;">
+      <mat-form-field style="width: 90%;">
+        <input [disabled]="product.statusId != 37 && product.statusId != 32 && product.statusId != 0" matInput autocomplete="off" [(ngModel)]="product.cost" type="number" (keyup)="getWeightedCost(product)">
+      </mat-form-field>
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="quantity">
+    <mat-header-cell *matHeaderCellDef>Quantity</mat-header-cell>
+    <mat-cell *matCellDef="let product;">
+      <mat-form-field style="width: 90%;">
+        <span matTooltip="Last Quantity" style="color: gray;" matPrefix>
+          {{ product.lastQuantity }}
+          &nbsp;
+        </span>
+        <input [disabled]="product.statusId != 37 && product.statusId != 32 && product.statusId != 0"  matInput autocomplete="off" [(ngModel)]="product.quantity" type="number"
+          (keyup)="getWeightedCost(product)" > 
+      </mat-form-field>
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="pricingStrategy">
+    <mat-header-cell *matHeaderCellDef>
+      <mat-form-field style="width: 90%;" >
+        <mat-label>Pricing Strategy</mat-label>
+        <mat-select (selectionChange)="onSelectPricingStrategy($event)" >
+          <mat-option [value]="strategy.id" *ngFor="let strategy of pricingStrategyList">
+            {{ strategy.description }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </mat-header-cell>
+    <mat-cell *matCellDef="let product;">
+      <mat-form-field style="width: 90%;" >
+        <mat-select [(ngModel)]="product.pricingStrategy" [disabled]="product.statusId != 37 && product.statusId != 32 && product.statusId != 0" >
+          <mat-option [value]="strategy.id" *ngFor="let strategy of pricingStrategyList" >
+            {{ strategy.description }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="price">
+    <mat-header-cell *matHeaderCellDef>Price</mat-header-cell>
+    <mat-cell *matCellDef="let product;">
+      <mat-form-field style="width: 90%;">
+        <input [disabled]="product.pricingStrategy == 1 || product.pricingStrategy == 2 || (product.statusId != 37 && product.statusId != 32 && product.statusId != 0)" matInput autocomplete="off"
+          [(ngModel)]="product.price" type="number" (keyup)="priceCheck(product)"  >
+      </mat-form-field>
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="retailPrice">
+    <mat-header-cell *matHeaderCellDef>Retail Price</mat-header-cell>
+    <mat-cell *matCellDef="let product;">
+      {{ product.retailPrice | number : '1.2-2' }}
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="delete">
+    <mat-header-cell *matHeaderCellDef>Delete</mat-header-cell>
+    <mat-cell *matCellDef="let product;">
+      <button [disabled]="product.statusId != 37 && product.statusId != 32 && product.statusId != 0" matTooltip="Toggle Delete" (click)="toggleDelete(product)" mat-mini-fab [color]="'warn'">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </mat-cell>
+  </ng-container>
+
+
+
+  <mat-header-row *matHeaderRowDef="columnsList"></mat-header-row>
+  <mat-row [ngStyle]="{ backgroundColor: row.state == 'D' ? '#fcc' : 'white' }"
+    *matRowDef="let row; columns: columnsList;"></mat-row>
+
+</mat-table>
+
+<br>
+<div class="flex" style="height: 50px;">
+  <div class="spacer"></div>
+  <mat-spinner *ngIf="submitting" [diameter]="35"></mat-spinner>
+  <div *ngIf="!submitting">
+    <button mat-raised-button (click)="onCancel()" [color]="'Warn'">Cancel</button>
+    &nbsp;
+    <button mat-raised-button [disabled]="!selectedWh" (click)="onUpdate(false)" [color]="'primary'">Update</button>
+    <!-- &nbsp;
+    <button [disabled]="isApproved || !selectedWh" mat-raised-button (click)="onUpdate(true)"
+      [color]="'accent'">Approve</button>  Now Approve Will Be done through app -->
+    &nbsp;
+    <button [disabled]="!selectedWh" mat-raised-button (click)="onSubmit()" [color]="'warn'">Submit</button>
+  </div>
+</div>

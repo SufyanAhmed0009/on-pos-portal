@@ -1,0 +1,110 @@
+<mat-table [dataSource]="products" class="mat-elevation-z8">
+
+    <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef>Title</mat-header-cell>
+        <mat-cell *matCellDef="let element; let i = index;">
+            <span
+            [ngStyle]="{ 'color':  ((priceCheck(element).highCost == true  || priceCheck(element).lowCost ==  true ) ? 'red' : 'black'), 'font-weight': 'bold'}">
+            {{(priceCheck(element).highCost == true  || priceCheck(element).lowCost ==  true) ? '*' : ''}}
+            {{element.name}}
+          </span>
+            <!-- {{ element.name }} -->
+        </mat-cell>
+        <mat-footer-cell *matFooterCellDef mat-footer-cell>
+            <strong>Total</strong>
+        </mat-footer-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="whCost">
+        <mat-header-cell *matHeaderCellDef>Warehouse Cost</mat-header-cell>
+        <mat-cell *matCellDef="let element; let i = index;">
+            {{ element.whCost }}
+        </mat-cell>
+        <mat-footer-cell *matFooterCellDef mat-footer-cell></mat-footer-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="retailPrice">
+        <mat-header-cell *matHeaderCellDef>Retail Price</mat-header-cell>
+        <mat-cell *matCellDef="let element; let i = index;">
+            {{ element.retailPrice }}
+        </mat-cell>
+        <mat-footer-cell *matFooterCellDef mat-footer-cell></mat-footer-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="quantity">
+        <mat-header-cell *matHeaderCellDef>Quantity</mat-header-cell>
+        <mat-cell *matCellDef="let element; let i = index;">
+            <mat-form-field style="width: 80%;">
+                <input autocomplete="off" type="number" [(ngModel)]="element.quantity"
+                    (ngModelChange)="getCost(element.id)" matInput>
+            </mat-form-field>
+        </mat-cell>
+        <mat-footer-cell *matFooterCellDef mat-footer-cell></mat-footer-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="cost">
+        <mat-header-cell *matHeaderCellDef>Cost per Unit</mat-header-cell>
+        <mat-cell *matCellDef="let element; let i = index;">
+            <!-- {{ element.cost }} -->
+            <mat-form-field style="width: 80%;">
+                <input [disabled]="warehouseId" autocomplete="off" type="number" [(ngModel)]="element.cost"
+                    (ngModelChange)="getCost(element.id)" matInput (keyup)="priceCheck(element)">
+            </mat-form-field>
+        </mat-cell>
+        <mat-footer-cell *matFooterCellDef mat-footer-cell></mat-footer-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="costTotal">
+        <mat-header-cell *matHeaderCellDef>Cost</mat-header-cell>
+        <mat-cell *matCellDef="let element; let i = index;">
+            {{ element.itemCost }}
+            <!-- <mat-form-field style="width: 80%;" >
+                <input autocomplete="off" type="number" [(ngModel)]="element.itemCost"
+                (ngModelChange)="getCost(element.id,true)" matInput>
+            </mat-form-field> -->
+        </mat-cell>
+        <mat-footer-cell *matFooterCellDef mat-footer-cell>
+            <strong>Rs. {{ getTotalCost() }}</strong>
+        </mat-footer-cell>
+    </ng-container>
+
+    <!-- <ng-container matColumnDef="pricingStrategy">
+        <mat-header-cell *matHeaderCellDef>Pricing Strategy</mat-header-cell>
+        <mat-cell *matCellDef="let element; let i = index;">
+            <mat-form-field style="width: 80%;">
+                <mat-label>Strategy</mat-label>
+                <mat-select [(ngModel)]="element.strategyId">
+                    <mat-option *ngFor="let strategy of pricingStategiesList" [value]="strategy.id">
+                        {{ strategy.description }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </mat-cell>
+        <mat-footer-cell *matFooterCellDef mat-footer-cell> </mat-footer-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="price">
+        <mat-header-cell *matHeaderCellDef>Price</mat-header-cell>
+        <mat-cell *matCellDef="let element; let i = index;">
+            <mat-form-field style="width: 80%;">
+                <input [disabled]="element.strategyId == 1 || element.strategyId == 2" autocomplete="off" type="number" [(ngModel)]="element.price" matInput>
+            </mat-form-field>
+        </mat-cell>
+        <mat-footer-cell *matFooterCellDef mat-footer-cell></mat-footer-cell>
+    </ng-container> -->
+
+    <ng-container matColumnDef="delete">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <mat-cell *matCellDef="let element; let i = index;">
+            <button (click)="onRemoveItem(i)" matTooltip="Remove Item" mat-mini-fab [color]="'warn'">
+                <i class="fa fa-times"></i>
+            </button>
+        </mat-cell>
+        <mat-footer-cell *matFooterCellDef mat-footer-cell></mat-footer-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="columnsList"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: columnsList;"></mat-row>
+    <mat-footer-row *matFooterRowDef="columnsList"></mat-footer-row>
+
+</mat-table>
